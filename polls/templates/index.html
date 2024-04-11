@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'polls/styles.css' %}">
+
+    <title>INSUMOS</title>
+</head>
+<body>
+    <h1 class='home'>Estoque dos ambientes didáticos</h1>
+    <div id="outer">
+        <a class="button_slide slide_down box" href='http://archlinux:3000/admin/'> FAZER LOGIN</a> 
+        <br /> <br /><br />
+        <a class="button_slide slide_down box" href='http://archlinux:3000/admin/'> ACESSAR PAINEL ADMIN</a> 
+        <br /> <br /><br />
+      </div>
+
+      <div class="container">
+        <div class="buscador">
+            <input type="text" placeholder="Buscar itens...">
+            <button>Buscar</button>
+        </div>
+
+        <div>
+    <table class='table'>
+        <tr>
+            <th>Nome</th>
+            <th>Quantidade</th>
+        </tr>
+        {% for dado in dados %}
+        <tr>
+            <td>{{dado.nome}}</td>
+            <td>{{dado.estoque}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+
+</body>
+</html>
