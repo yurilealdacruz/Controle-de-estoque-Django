@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
    
     <meta charset="UTF-8">
@@ -18,27 +18,37 @@
         <br /> <br /><br />
       </div>
 
+
+      <form action="{% url 'buscar_item' %}" method="GET">
       <div class="container">
         <div class="buscador">
-            <input type="text" placeholder="Buscar itens...">
-            <button>Buscar</button>
+            <input type="text" name='q' placeholder="Buscar itens...">
+            <button type="submit">Buscar</button>
         </div>
+    </form>
 
-        <div>
-    <table class='table'>
-        <tr>
-            <th>Nome</th>
-            <th>Quantidade</th>
-        </tr>
-        {% for dado in dados %}
-        <tr>
-            <td>{{dado.nome}}</td>
-            <td>{{dado.estoque}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+    <div>
+        <table class='table'>
+            <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th></th>
+            </tr>
+            {% for dado in dados %}
+            <tr>
+                <td>{{ dado.nome }}</td>
+                <td>{{ dado.estoque }} </td>  
+                <td ><span><a class="retirar" href='retirar.html'>RETIRAR</a></span></td>
+            </tr>
+            
+            {% endfor %}
+           
+        </table>
+    </div>
 
+   
+
+    
 
 
 </body>
