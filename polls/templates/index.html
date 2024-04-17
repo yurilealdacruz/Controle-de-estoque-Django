@@ -1,55 +1,55 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-   
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'polls/styles.css' %}">
+{% extends 'global/base.html' %}
 
-    <title>INSUMOS</title>
-</head>
-<body>
-    <h1 class='home'>Estoque dos ambientes didáticos</h1>
-    <div id="outer">
-        <a class="button_slide slide_down box" href='http://archlinux:3000/admin/'> FAZER LOGIN</a> 
-        <br /> <br /><br />
-        <a class="button_slide slide_down box" href='http://archlinux:3000/admin/'> ACESSAR PAINEL ADMIN</a> 
-        <br /> <br /><br />
-      </div>
+{% block content %}
+
+<div class="responsive-table">
+    <table class="contacts-table">
+      <caption class="table-caption ">
+        Insumos
+      </caption>
 
 
-      <form action="{% url 'buscar_item' %}" method="GET">
-      <div class="container">
-        <div class="buscador">
-            <input type="text" name='q' placeholder="Buscar itens...">
-            <button type="submit">Buscar</button>
-        </div>
-    </form>
 
-    <div>
-        <table class='table'>
-            <tr>
-                <th>Nome</th>
-                <th>Quantidade</th>
-                <th></th>
-            </tr>
+
+
+
+      <thead>
+        <tr class="table-row table-row-header">
+          <th class="table-header">ID</th>
+          <th class="table-header">Nome</th>
+          <th class="table-header">Quantidade</th>
+          <th class="table-header">Opção</th>
+
+        </tr>
+      </thead>
+
+
+        <tdoby>
             {% for dado in dados %}
-            <tr>
-                <td>{{ dado.nome }}</td>
-                <td>{{ dado.estoque }} </td>  
-                <td ><span><a class="retirar" href='retirar.html'>RETIRAR</a></span></td>
+
+            <tr class="table-row">
+                <td class="table-cel">
+                    <a class="table-link" href="">
+                        {{dado.id}}
+                    </a>
+                </td>
+                <td class="table-cel">
+                    <a class="table-link" href="">
+                        {{dado.nome}}
+                    </a>
+                </td>
+                <td class="table-cel">{{dado.estoque}} </td>
+                <td class="table-cel"> <a class="table-link" href=""> Retirar </a>| <a class="table-link" href=""> Adicionar </a> </td>
+            </tr>
+
+
             </tr>
             
             {% endfor %}
-           
-        </table>
+
+
+        
+  
+    </table>
     </div>
-
-   
-
-    
-
-
-</body>
-</html>
+{% endblock content %}
