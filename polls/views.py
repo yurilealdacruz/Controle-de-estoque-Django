@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Estoque
+from .models import Estoque, SALA_CHOICES
 
 # Create your views here.
 
 
 def index(request):
     dados = Estoque.objects.all()
-    return render(request, 'index.html', {'dados':dados})
+    return render(request, 'index.html', {'dados':dados, "salas": SALA_CHOICES})
 
 
 def buscar_item(request):
@@ -32,4 +32,4 @@ def editar_nome(request, item_id):
         return redirect('index')
     
     item = Estoque.objects.get(id=item_id)
-    return render(request, 'nome.html', {'item': item})
+    return render(request, 'nome.html', {'item': item, 'salas_laboratorio': SALA_CHOICES})
