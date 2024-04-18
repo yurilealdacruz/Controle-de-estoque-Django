@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form method="POST" action="{% url 'update_user' %}">
+<form method="POST" action="{% url 'editar_nome' item_id=item.id %}">
     {% csrf_token %}
     <label for="new_name">Novo Nome:</label>
     <input type="text" id="new_name" name="new_name">

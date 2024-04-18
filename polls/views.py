@@ -20,17 +20,16 @@ def buscar_item(request):
 
     return render(request, 'index.html', {'dados': items, 'query': query})
 
-def editar_nome(request):
-    return render(request, 'nome.html')
+# def editar_nome(request):
+#     return render(request, 'nome.html')
 
-
-def update_user(request):
+def editar_nome(request, item_id):
     if request.method == 'POST':
         novo_nome = request.POST['new_name']
-        # Supondo que você tenha um modelo de usuário chamado 'Usuario'
-        usuario = Estoque.objects.get(id=1)  # Use o ID correto do usuário que deseja modificar
-        usuario.nome = novo_nome
-        usuario.save()
-        return redirect('index')  # Redirecionar para uma página de sucesso após a atualização
-
-    return render(request, 'formulario.html')
+        item = Estoque.objects.get(id=item_id)
+        item.nome = novo_nome
+        item.save()
+        return redirect('index')
+    
+    item = Estoque.objects.get(id=item_id)
+    return render(request, 'nome.html', {'item': item})

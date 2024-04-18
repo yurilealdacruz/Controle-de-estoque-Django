@@ -2,54 +2,79 @@
 
 {% block content %}
 
+<style>
+    .modalRetirar {
+        display: none;
+        position: fixed;
+        /* Ajuste a posição conforme necessário */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+    function abrirModal(id) {
+        var modal = document.getElementById('modalRetirar_' + id);
+        modal.style.display = 'block';
+    }
+
+    function fecharModal(id) {
+        var modal = document.getElementById('modalRetirar_' + id);
+        modal.style.display = 'none';
+    }
+</script>
+
+
 <div class="responsive-table">
     <table class="contacts-table">
-      <caption class="table-caption ">
-        Insumos
-      </caption>
-
-
-
-
-
-
-      <thead>
-        <tr class="table-row table-row-header">
-          <th class="table-header">ID</th>
-          <th class="table-header">Nome</th>
-          <th class="table-header">Quantidade</th>
-          <th class="table-header">Opção</th>
-
-        </tr>
-      </thead>
-
-
-        <tdoby>
+        <caption class="table-caption">
+            Insumos
+        </caption>
+        <thead>
+            <tr class="table-row table-row-header">
+                <th class="table-header">ID</th>
+                <th class="table-header">Nome</th>
+                <th class="table-header">Quantidade</th>
+                <th class="table-header">Opção</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for dado in dados %}
-
             <tr class="table-row">
+                <td class="table-cel">{{ dado.id }}</td>
+                <td class="table-cel">{{ dado.nome }}</td>
+                <td class="table-cel">{{ dado.estoque }}</td>
                 <td class="table-cel">
-                    <a class="table-link" href="">
-                        {{dado.id}}
-                    </a>
+                    <a class="table-link" href="#" onclick="abrirModal('{{ dado.id }}')">Retirar</a> |
+                    <a class="table-link" href="#" onclick="abrirModal('{{ dado.id }}')">Adicionar</a>
+                    
+                    <!-- Modal para o item -->
+                    <div id="modalRetirar_{{ dado.id }}" class="modalRetirar">
+                        <div class="modal-content">
+                            <span class="close" onclick="fecharModal('{{ dado.id }}')">&times;</span>
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <label for="new_quantity">Quantidade:</label>
+                                <input type="number" id="new_quantity" name="new_quantity">
+                                <br>
+                                <label for="new_location">Localização:</label>
+                                <input type="text" id="new_location" name="new_location">
+                                <br>
+                                <button type="submit">Atualizar Nome</button>
+                            </form>
+                        </div>
+                    </div>
                 </td>
-                <td class="table-cel">
-                    <a class="table-link" href="{% url "editar_nome" %}">
-                        {{dado.nome}}
-                    </a>
-                </td>
-                <td class="table-cel">{{dado.estoque}} </td>
-                <td class="table-cel"> <a class="table-link" href=""> Retirar </a>| <a class="table-link" href=""> Adicionar </a> </td>
             </tr>
-
-
-            </tr>
-            
             {% endfor %}
-
-
-        
-  
+        </tbody>
     </table>
-    </div>
+</div>
+
 {% endblock content %}
