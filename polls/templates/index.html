@@ -55,23 +55,19 @@
                 <td class="table-cel">{{ dado.estoque }}</td>
                 <td class="table-cel">
                     <a class="table-link" href="#" onclick="abrirModal('{{ dado.id }}')">Retirar</a> |
-                    <a class="table-link" href="#" onclick="abrirModal('{{ dado.id }}')">Adicionar</a>
+                    <a class="table-link" href="#" onclick="abrirModal2('{{ dado.id }}')">Adicionar</a>
                     
                     <!-- Modal para o item -->
                     <div id="modalRetirar_{{ dado.id }}" class="modalRetirar">
                         <div class="modal-content">
                             <span class="close" onclick="fecharModal('{{ dado.id }}')">&times;</span>
-                            <form method="POST" action="">
+                            <form method="POST" action="{% url 'editar_estoque' dado.id %}">
                                 {% csrf_token %}
-
-                                <form method="POST" action="">
-                                    {% csrf_token %}
-                                    <label for="new_quantity">Quantidade:</label>
-                                    <input type="number" id="new_quantity" name="new_quantity">
+                                    <label for="retirada">Quantidade:</label>
+                                    <input type="number" id="retirada" name="retirada">
                                     <br>
-                                    <label for="new_location">Localização:</label>
+                                    <label for="sala_laboratorio">Localização:</label>
                                     <select name="sala_laboratorio" required="required">
-                                        
                                         {% for sala in salas %}
                                             <option value="{{ sala.0 }}">{{ sala.0 }}</option>
                                         {% endfor %}

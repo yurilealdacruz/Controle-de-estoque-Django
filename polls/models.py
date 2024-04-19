@@ -121,11 +121,12 @@ class Estoque_da_at(models.Model):
          super().save(*args, **kwargs)
     
     def realizar_retirada(self):
-        if self.retirada > 0:
-            self.estoque -= self.retirada
-            self.save()  # Salva o objeto após subtrair a retirada do estoque
-            self.retirada = 0  # Reseta o valor de retirada após a operação
-            super().save()  # Salva novamente para refletir o valor de retirada zerado
+        if self.retirada is not None:
+            if self.retirada > 0:
+                self.estoque -= self.retirada
+                self.save()  # Salva o objeto após subtrair a retirada do estoque
+                self.retirada = 0  # Reseta o valor de retirada após a operação
+                super().save()  # Salva novamente para refletir o valor de retirada zerado
 
 class Demanda(models.Model):
     id = models.BigAutoField(primary_key=True)

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Estoque, SALA_CHOICES
 
@@ -7,6 +7,7 @@ from .models import Estoque, SALA_CHOICES
 
 def index(request):
     dados = Estoque.objects.all()
+    dados = Estoque.objects.all().order_by('id')
     return render(request, 'index.html', {'dados':dados, "salas": SALA_CHOICES})
 
 
@@ -23,13 +24,20 @@ def buscar_item(request):
 # def editar_nome(request):
 #     return render(request, 'nome.html')
 
-def editar_nome(request, item_id):
+def editar_estoque(request, item_id):
     if request.method == 'POST':
-        novo_nome = request.POST['new_name']
+        try:
+            retirada = int(request.POST['retirada'])
+            sala_laboratorio = request.POST['sala_laboratorio']  # Obtém o valor do campo sala_laboratorio
+        except (ValueError, KeyError):
+            retirada = 0
+            sala_laboratorio = ''
         item = Estoque.objects.get(id=item_id)
-        item.nome = novo_nome
+        item.retirada = retirada
+        item.sala_laboratorio = sala_laboratorio  # Atualiza o valor do campo sala_laboratorio no objeto Estoque
         item.save()
         return redirect('index')
     
     item = Estoque.objects.get(id=item_id)
-    return render(request, 'nome.html', {'item': item, 'salas_laboratorio': SALA_CHOICES})
+    salas_laboratorio = Estoque.objects.values_list('sala_laboratorio', flat=True).distinct()
+    return render(request, 'nome.html', {'item': item, 'salas_laboratorio': salas_laboratorio})
