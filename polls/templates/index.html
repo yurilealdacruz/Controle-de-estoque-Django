@@ -19,9 +19,15 @@
 </style>
 
 <script>
+    
     function abrirModal(id) {
-        var modal = document.getElementById('modalRetirar_' + id);
-        modal.style.display = 'block';
+        var isAuthenticated = "{{ user.is_authenticated }}";  // Convertendo para string
+        if (isAuthenticated === "True") {
+            var modal = document.getElementById('modalRetirar_' + id);
+            modal.style.display = 'block';
+        } else {
+            alert("Você precisa estar logado para editar.");
+        }
     }
 
     function fecharModal(id) {
@@ -30,6 +36,11 @@
     }
 </script>
 
+{% if alerta %}
+    <script>
+        alert("{{ alerta }}");
+    </script>
+{% endif %}
 
 <div class="responsive-table">
     <table class="contacts-table">

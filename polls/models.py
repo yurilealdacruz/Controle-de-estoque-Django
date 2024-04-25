@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 from simple_history.models import HistoricalRecords
 
 # id (primary key - automático)
@@ -77,6 +78,7 @@ SALA_CHOICES = [
         ('SALA 5.4.13','SALA 5.4.12'),
         ('SALA 5.4.14','SALA 5.4.14'),
         ('SALA 5.4.15','SALA 5.4.15'),
+        ('ASSISTÊNCIA TÉCNICA','ASSISTÊNCIA TÉCNICA'),
 ]
 
 
