@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages 
+from .forms import AdicionarEstoqueForm
 import logging
 from django.contrib.auth.decorators import login_required
 from .models import Estoque, SALA_CHOICES
@@ -65,13 +66,39 @@ def editar_estoque(request, item_id):
                 except (ValueError, KeyError):
                     retirada = 0
                     sala_laboratorio = ''
-                item = Estoque.objects.get(id=item_id)
-                item.retirada = retirada
-                item.sala_laboratorio = sala_laboratorio  # Atualiza o valor do campo sala_laboratorio no objeto Estoque
-                item.save()
-                return redirect('index')
-    
+                if retirada >= 0:
+                    item = Estoque.objects.get(id=item_id)
+                    item.retirada = retirada
+                    item.sala_laboratorio = sala_laboratorio  # Atualiza o valor do campo sala_laboratorio no objeto Estoque
+                    item.save()
+                    return redirect('index')
+                else:
+                    item = Estoque.objects.get(id=item_id)
+                    item.sala_laboratorio = sala_laboratorio  # Atualiza o valor do campo sala_laboratorio no objeto Estoque
+                    item.save()
+                    return redirect('index')
+        
         item = Estoque.objects.get(id=item_id)
         salas_laboratorio = Estoque.objects.values_list('sala_laboratorio', flat=True).distinct()
         return render(request, 'nome.html', {'item': item, 'salas_laboratorio': salas_laboratorio})
-         
+
+
+
+def adicionar_estoque(request, dado_id):
+    if request.method == 'POST':
+        # Obtenha o objeto de dado com base no ID
+        dado = Estoque.objects.get(id=dado_id)
+        # Crie um formulário com os dados enviados pelo usuário
+        form = AdicionarEstoqueForm(request.POST)
+        if form.is_valid():
+            # Obtenha a quantidade a ser adicionada do formulário
+            quantidade = form.cleaned_data['quantidade']
+            # Adicione a quantidade ao estoque do objeto dado
+            dado.estoque += quantidade + 1
+            # Salve o objeto atualizado
+            dado.save()
+            # Redirecione para a página de detalhes do objeto ou para onde desejar
+            return redirect('index')  # Substitua 'nome_da_url' pela URL desejada
+    else:
+        # Se o método da solicitação não for POST, retorne um erro ou redirecione
+        return HttpResponseBadRequest("Método inválido")

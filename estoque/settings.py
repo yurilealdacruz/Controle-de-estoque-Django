@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-$rsxa2wh6a0pco18_vem%8+(5$1iebgp6jakpo(_%lf*-m0c@z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['archlinux', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -102,6 +102,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 6,  # Altere este valor para o número desejado de caracteres mínimos
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -139,7 +142,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['archlinux']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

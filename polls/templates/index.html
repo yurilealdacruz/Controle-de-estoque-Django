@@ -6,7 +6,6 @@
     .modalRetirar {
         display: none;
         position: fixed;
-        /* Ajuste a posição conforme necessário */
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -19,9 +18,8 @@
 </style>
 
 <script>
-    
-    function abrirModal(id) {
-        var isAuthenticated = "{{ user.is_authenticated }}";  // Convertendo para string
+    function abrirModalRetirar(id) {
+        var isAuthenticated = "{{ user.is_authenticated }}";
         if (isAuthenticated === "True") {
             var modal = document.getElementById('modalRetirar_' + id);
             modal.style.display = 'block';
@@ -30,8 +28,24 @@
         }
     }
 
-    function fecharModal(id) {
+    function abrirModalAdicionar(id) {
+        var isAuthenticated = "{{ user.is_authenticated }}";
+        if (isAuthenticated === "True") {
+            var modal = document.getElementById('modalAdicionar_' + id);
+            modal.style.display = 'block';
+        } else {
+            alert("Você precisa estar logado para editar.");
+        }
+    }
+
+
+
+    function fecharModalRetirar(id) {
         var modal = document.getElementById('modalRetirar_' + id);
+        modal.style.display = 'none';
+    }
+    function fecharModalAdicionar(id) {
+        var modal = document.getElementById('modalAdicionar_' + id);
         modal.style.display = 'none';
     }
 </script>
@@ -46,9 +60,7 @@
     <table class="contacts-table">
         <caption class="table-caption">
             Insumos
-
-            {{sala}}
-
+            {{ sala }}
         </caption>
         <thead>
             <tr class="table-row table-row-header">
@@ -60,20 +72,20 @@
         </thead>
         <tbody>
             {% for dado in dados %}
-            <tr class="table-row">
-                <td class="table-cel">{{ dado.id }}</td>
-                <td class="table-cel">{{ dado.nome }}</td>
-                <td class="table-cel">{{ dado.estoque }}</td>
-                <td class="table-cel">
-                    <a class="table-link" href="#" onclick="abrirModal('{{ dado.id }}')">Retirar</a> |
-                    <a class="table-link" href="#" onclick="abrirModal2('{{ dado.id }}')">Adicionar</a>
-                    
-                    <!-- Modal para o item -->
-                    <div id="modalRetirar_{{ dado.id }}" class="modalRetirar">
-                        <div class="modal-content">
-                            <span class="close" onclick="fecharModal('{{ dado.id }}')">&times;</span>
-                            <form method="POST" action="{% url 'editar_estoque' dado.id %}">
-                                {% csrf_token %}
+                <tr class="table-row">
+                    <td class="table-cel">{{ dado.id }}</td>
+                    <td class="table-cel">{{ dado.nome }}</td>
+                    <td class="table-cel">{{ dado.estoque }}</td>
+                    <td class="table-cel">
+                        <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dado.id }}')">Retirar</a> |
+                        <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dado.id }}')">Adicionar</a>
+                        
+                        <!-- Modal para o item -->
+                        <div id="modalRetirar_{{ dado.id }}" class="modalRetirar">
+                            <div class="modal-content">
+                                <span class="close" onclick="fecharModalRetirar('{{ dado.id }}')">&times;</span>
+                                <form method="POST" action="{% url 'editar_estoque' dado.id %}">
+                                    {% csrf_token %}
                                     <label for="retirada">Quantidade:</label>
                                     <input type="number" id="retirada" name="retirada">
                                     <br>
@@ -86,16 +98,28 @@
                                     <br>
                                     <button type="submit">Atualizar</button>
                                 </form>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
+
+                        <!-- Modal para adicionar -->
+                        <div id="modalAdicionar_{{ dado.id }}" class="modalRetirar">
+                            <div class="modal-content">
+                                <span class="close" onclick="fecharModalAdicionar('{{ dado.id }}')">&times;</span>
+                                <!-- Seu formulário para adicionar aqui -->
+                                <form method="POST" action="{% url 'adicionar_estoque' dado.id %}">
+                                    {% csrf_token %}
+                                    <label for="quantidade">Quantidade a adicionar:</label>
+                                    <input type="number" id="quantidade" name="quantidade">
+                                    <br>
+                                    <button type="submit">Adicionar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
-
-
 
 {% endblock content %}
