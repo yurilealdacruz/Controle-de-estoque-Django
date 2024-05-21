@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import messages 
-from .forms import AdicionarEstoqueForm
 import logging
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseBadRequest
+from .forms import AdicionarEstoqueForm
 from .models import Estoque, SALA_CHOICES
+from simple_history.utils import update_change_reason
 
 # Create your views here.
 
@@ -29,9 +30,7 @@ def buscar_item(request):
 # def editar_nome(request):
 #     return render(request, 'nome.html')
 
-
 logger = logging.getLogger(__name__)
-
 def cadastro_login(request):
     logger.info('Acessou a view cadastro_login')
     if request.method == 'POST':
@@ -53,12 +52,11 @@ def cadastro_login(request):
 
 def profile(request):
     # Lógica para recuperar e exibir o perfil do usuário
-    return render(request,  'accounts/profile/profile.html')
-
+    return render(request, 'accounts/profile/profile.html')
 
 @login_required
 def editar_estoque(request, item_id):
-    
+
         if request.method == 'POST':
                 try:
                     retirada = int(request.POST['retirada'])
@@ -73,17 +71,11 @@ def editar_estoque(request, item_id):
                     item.save()
                     return redirect('index')
                 else:
-                    item = Estoque.objects.get(id=item_id)
-                    item.sala_laboratorio = sala_laboratorio  # Atualiza o valor do campo sala_laboratorio no objeto Estoque
-                    item.save()
-                    return redirect('index')
-        
+                    return HttpResponseBadRequest("Método inválido")
+
         item = Estoque.objects.get(id=item_id)
         salas_laboratorio = Estoque.objects.values_list('sala_laboratorio', flat=True).distinct()
         return render(request, 'nome.html', {'item': item, 'salas_laboratorio': salas_laboratorio})
-
-
-
 def adicionar_estoque(request, dado_id):
     if request.method == 'POST':
         # Obtenha o objeto de dado com base no ID
@@ -102,3 +94,13 @@ def adicionar_estoque(request, dado_id):
     else:
         # Se o método da solicitação não for POST, retorne um erro ou redirecione
         return HttpResponseBadRequest("Método inválido")
+    
+def historico_retiradas(request):
+    # Obtendo o histórico de retiradas de Estoque
+    historico_estoque = Estoque.history.all()
+    
+    context = {
+        'historico_estoque': historico_estoque,
+    }
+    
+    return render(request, 'historico_retiradas.html', context)
