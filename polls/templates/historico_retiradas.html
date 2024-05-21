@@ -6,7 +6,6 @@
     <table border="1">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nome do Insumo</th>
                 <th>Quantidade Retirada</th>
                 <th>Destino</th>
@@ -18,7 +17,6 @@
         <tbody>
             {% for historico in historico_estoque %}
             <tr>
-                <td>{{ historico.id }}</td>
                 <td>{{ historico.nome }}</td>
                 <td>{{ historico.retirada }}</td>
                 <td>{{ historico.sala_laboratorio }}</td>
