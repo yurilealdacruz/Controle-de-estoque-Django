@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h1>Histórico de Retiradas</h1>
+    <h1>Histórico de Movimentação</h1>
     <table border="1">
         <thead>
             <tr>
@@ -12,6 +12,7 @@
                 <th>Destino</th>
                 <th>Data</th>
                 <th>Ação</th>
+                <th>Usuário</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,7 @@
                 <td>{{ historico.sala_laboratorio }}</td>
                 <td>{{ historico.history_date }}</td>
                 <td>{{ historico.history_type }}</td>
+                <td>{{ historico.history_user}}</td>
             </tr>
             {% endfor %}
         </tbody>
