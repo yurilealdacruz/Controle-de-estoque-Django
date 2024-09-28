@@ -1,0 +1,12 @@
+{% extends "global/base.html" %}
+
+{% block content %}
+
+<form method="POST" action="{% url 'editar_nome' item_id=item.id %}">
+    {% csrf_token %}
+    <label for="new_name">Novo Nome:</label>
+    <input type="text" id="new_name" name="new_name">
+    <button type="submit">Atualizar Nome</button>
+</form>
+
+{% endblock content %}

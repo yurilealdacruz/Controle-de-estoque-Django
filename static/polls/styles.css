@@ -97,6 +97,14 @@ svg {
   transition: background-color var(--transition-fast) ease-in-out;
   border-radius: var(--default-border-radius);
 }
+.menu-link-baixo {
+  display: block;
+  padding: var(--spacing);
+  color: var(--link-light-color);
+  text-decoration: none;
+  transition: background-color var(--transition-fast) ease-in-out;
+  border-radius: var(--default-border-radius);
+}
 
 .menu-link:hover {
   background: var(--clr-light-shadow-10);
@@ -312,4 +320,15 @@ svg {
 .btn:active {
   filter: brightness(80%);
   box-shadow: 0 0 5px var(--link-dark-color);
+}
+
+
+.social-icons {
+  width: 50px; /* Largura do ícone */
+  height: 10px; /* Altura do ícone */
+  cursor: pointer;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-left: auto;
+ 
 }

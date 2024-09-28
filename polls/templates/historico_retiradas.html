@@ -1,31 +1,37 @@
 {% extends 'global/base.html' %}
+{% load static %}
 
 {% block content %}
+<h1>Histórico Ambiente Didático</h1>
 
-    <h1>Histórico de Retiradas</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome do Insumo</th>
-                <th>Quantidade Retirada</th>
-                <th>Destino</th>
-                <th>Data</th>
-                <th>Ação</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for historico in historico_estoque %}
-            <tr>
-                <td>{{ historico.id }}</td>
-                <td>{{ historico.nome }}</td>
-                <td>{{ historico.retirada }}</td>
-                <td>{{ historico.sala_laboratorio }}</td>
-                <td>{{ historico.history_date }}</td>
-                <td>{{ historico.history_type }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div style="display: flex; justify-content: space-between;">
+    <!-- Tabela à esquerda -->
+    <div style="flex: 1; margin-right: 20px;">
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>Nome do Insumo</th>
+                    <th>Quantidade Retirada</th>
+                    <th>Destino</th>
+                    <th>Data</th>
+                    <th>Ação</th>
+                    <th>Usuário</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for historico in historico_estoque %}
+                <tr>
+                    <td>{{ historico.nome }}</td>
+                    <td>{{ historico.retirada }}</td>
+                    <td>{{ historico.sala_laboratorio }}</td>
+                    <td>{{ historico.history_date }}</td>
+                    <td>{{ historico.history_type }}</td>
+                    <td>{{ historico.history_user}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 
 {% endblock content %}

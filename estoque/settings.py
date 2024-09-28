@@ -77,19 +77,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'estoque.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': '1',
-        'HOST': 'localhost',  # Ou o endereço do seu servidor PostgreSQL
-        'PORT': '5432',       # Porta padrão do PostgreSQL
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ESTOQUENTI',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
     }
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -140,7 +141,9 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['localhost', 'archlinux', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+LOGIN_REDIRECT_URL = '/'

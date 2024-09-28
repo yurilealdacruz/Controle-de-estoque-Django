@@ -1,0 +1,11 @@
+{% extends 'globalalmo/base.html' %}
+{% load static %}
+
+{% block content %}
+<body>
+    <h1>Gráfico de Retiradas de Insumos</h1>
+    <img src="data:image/png;base64,{{ grafico_base64 }}" alt="Gráfico de Retiradas">
+    
+    <!-- Você pode adicionar o restante do conteúdo aqui -->
+</body>
+{% endblock %}

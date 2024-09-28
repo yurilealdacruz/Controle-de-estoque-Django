@@ -77,9 +77,9 @@
                     <td class="table-cel">{{ dado.nome }}</td>
                     <td class="table-cel">{{ dado.estoque }}</td>
                     <td class="table-cel">
-                        <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dado.id }}')">Retirar</a> |
-                        <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dado.id }}')">Adicionar</a>
-                        
+                       <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dado.id }}')">| Retirar |</a>
+                       <!--  <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dado.id }}')">Adicionar</a> -->
+
                         <!-- Modal para o item -->
                         <div id="modalRetirar_{{ dado.id }}" class="modalRetirar">
                             <div class="modal-content">

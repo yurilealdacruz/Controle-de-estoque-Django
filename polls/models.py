@@ -82,6 +82,13 @@ SALA_CHOICES = [
 ]
 
 
+
+from django.db import models
+from django.utils import timezone
+from simple_history.models import HistoricalRecords
+
+
+
 class Estoque(models.Model):
     id = models.BigAutoField(primary_key=True)
     nome = models.CharField(max_length=50)
@@ -89,6 +96,54 @@ class Estoque(models.Model):
     estoque = models.IntegerField()
     data_estoque = models.DateTimeField(default=timezone.now)
     sala_laboratorio = models.CharField(max_length=50, choices=SALA_CHOICES,blank=True)
+    foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
+    history = HistoricalRecords()
+
+    def __str__(self) -> str:
+        return f'{self.nome}'
+
+    def save(self, *args, **kwargs):
+         # Subtrai o valor de retirada do estoque
+         self.estoque -= self.retirada
+         super().save(*args, **kwargs)
+
+    def realizar_retirada(self):
+        if self.retirada > 0:
+            self.estoque -= self.retirada
+            self.save()  # Salva o objeto após subtrair a retirada do estoque
+            self.retirada = 0  # Reseta o valor de retirada após a operação
+            super().save()  # Salva novamente para refletir o valor de retirada zerado      
+
+class EstoqueAT(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nome = models.CharField(max_length=50)
+    retirada = models.IntegerField(default=0)
+    estoque = models.IntegerField()
+    data_estoque = models.DateTimeField(default=timezone.now)
+    foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
+    history = HistoricalRecords()
+
+    def __str__(self) -> str:
+        return f'{self.nome}'
+
+    def save(self, *args, **kwargs):
+         # Subtrai o valor de retirada do estoque
+         self.estoque -= self.retirada
+         super().save(*args, **kwargs)
+
+    def realizar_retirada(self):
+        if self.retirada > 0:
+            self.estoque -= self.retirada
+            self.save()  # Salva o objeto após subtrair a retirada do estoque
+            self.retirada = 0  # Reseta o valor de retirada após a operação
+            super().save()  # Salva novamente para refletir o valor de retirada zerado
+
+class EstoqueAlmo(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nome = models.CharField(max_length=50)
+    retirada = models.IntegerField(default=0)
+    estoque = models.IntegerField()
+    data_estoque = models.DateTimeField(default=timezone.now)
     foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
     history = HistoricalRecords()
 
@@ -114,7 +169,7 @@ class Demanda(models.Model):
     descricao = models.TextField(max_length=253)
     data = models.DateTimeField(default=timezone.now)
     sala_laboratorio = models.CharField(max_length=50, choices=SALA_CHOICES,blank=True)
-    foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg',blank=True, null=True)
+    foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
     history = HistoricalRecords()
 
     def __str__(self) -> str:

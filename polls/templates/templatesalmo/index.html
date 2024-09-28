@@ -1,0 +1,105 @@
+{% extends 'globalalmo/base.html' %}
+
+{% block content %}
+
+<style>
+    .modalRetirar {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+    function abrirModalRetirar(id) {
+        var isAuthenticated = "{{ user.is_authenticated }}";
+        if (isAuthenticated === "True") {
+            var modal = document.getElementById('modalRetirar_' + id);
+            modal.style.display = 'block';
+        } else {
+            alert("Você precisa estar logado para editar.");
+        }
+    }
+
+    function abrirModalAdicionar(id) {
+        var isAuthenticated = "{{ user.is_authenticated }}";
+        if (isAuthenticated === "True") {
+            var modal = document.getElementById('modalAdicionar_' + id);
+            modal.style.display = 'block';
+        } else {
+            alert("Você precisa estar logado para editar.");
+        }
+    }
+
+
+
+    function fecharModalRetirar(id) {
+        var modal = document.getElementById('modalRetirar_' + id);
+        modal.style.display = 'none';
+    }
+    function fecharModalAdicionar(id) {
+        var modal = document.getElementById('modalAdicionar_' + id);
+        modal.style.display = 'none';
+    }
+</script>
+
+{% if alerta %}
+    <script>
+        alert("{{ alerta }}");
+    </script>
+{% endif %}
+
+<div class="responsive-table">
+    <table class="contacts-table">
+        <caption class="table-caption">
+            Insumos
+            {{ sala }}
+        </caption>
+        <thead>
+            <tr class="table-row table-row-header">
+                <th class="table-header">ID</th>
+                <th class="table-header">Nome</th>
+                <th class="table-header">Quantidade</th>
+                <th class="table-header">Opção</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dadoalmo in dadosalmo %}
+                <tr class="table-row">
+                    <td class="table-cel">{{ dadoalmo.id }}</td>
+                    <td class="table-cel">{{ dadoalmo.nome }}</td>
+                    <td class="table-cel">{{ dadoalmo.estoque }}</td>
+                    <td class="table-cel">
+                       <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dadoalmo.id }}')">| Retirar |</a>
+                       <!--  <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dado.id }}')">Adicionar</a> -->
+
+                        <!-- Modal para o item -->
+                        <div id="modalRetirar_{{ dadoalmo.id }}" class="modalRetirar">
+                            <div class="modal-content">
+                                <span class="close" onclick="fecharModalRetirar('{{ dadoalmo.id }}')">&times;</span>
+                                <form method="POST" action="{% url 'editar_estoquealmo' dadoalmo.id %}">
+                                    {% csrf_token %}
+                                    <label for="retirada">Quantidade:</label>
+                                    <input type="number" id="retirada" name="retirada">
+                                    <br>
+                                    <br>
+                                    <button type="submit">Atualizar</button>
+                                </form>
+                            </div>
+                        </div>
+
+                
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
