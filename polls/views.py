@@ -8,6 +8,7 @@ from .forms import AdicionarEstoqueForm
 from .models import Estoque, SALA_CHOICES, EstoqueAT, EstoqueAlmo, EstoqueHistorico, EstoqueHistoricoAT, EstoqueHistoricoAlmo
 import matplotlib.pyplot as plt
 import io
+import numpy as np
 import base64
 import matplotlib
 matplotlib.use('Agg')  # Use o backend Agg para gerar imagens
@@ -17,6 +18,7 @@ from django.contrib.auth import logout
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import permission_required
 from .forms import EstoqueAlmoForm, EstoqueATForm, EstoqueForm
+
 
 
 # Create your views here.
@@ -351,34 +353,37 @@ def historico_retiradas_grafico_almo(request):
     # Agrupar os dados históricos por nome e somar as retiradas
     estoques = EstoqueAlmo.history.values('nome').annotate(total_retiradas=Sum('retirada'))
 
+    # Ordenar todos os itens do maior para o menor
+    estoques = sorted(estoques, key=lambda x: x['total_retiradas'], reverse=True)
+
     # Prepara os dados para o gráfico
     labels = [estoque['nome'] for estoque in estoques]
     sizes = [estoque['total_retiradas'] for estoque in estoques]
-    colors = plt.cm.Paired.colors[:len(labels)]
+    
+    # Criar gráfico de barras
+    fig, ax = plt.subplots(figsize=(12, 9))  # Aumentar o tamanho do gráfico
+    ax.barh(labels, sizes, color='skyblue', height=0.5)  # Ajustar a altura das barras
 
-    # Verifica se há dados para plotar
-    if not sizes:
-        sizes = [1]  # Para evitar erro no gráfico se não houver dados
+    # Adicionar rótulos e título
+    ax.set_xlabel('Total de Retiradas', fontsize=14)  # Aumentar o tamanho do rótulo do eixo x
+    ax.set_title('Gráfico de Retiradas de Insumos', fontsize=16)  # Aumentar o tamanho do título
 
-    # Criar gráfico de pizza sem porcentagens internas
-    fig, ax = plt.subplots(figsize=(15, 10))
-    wedges, texts = ax.pie(sizes, colors=colors, shadow=True, startangle=140)
+    # Adicionar os valores ao lado de cada barra
+    for index, value in enumerate(sizes):
+        ax.text(value, index, str(value), fontsize=12)  # Aumentar o tamanho da fonte dos valores
 
-    # Calcula a porcentagem de cada item
-    porcentagens = [f"{size / sum(sizes) * 100:.1f}%" for size in sizes]
+    # Aumentar o tamanho da fonte dos rótulos das barras
+    ax.tick_params(axis='y', labelsize=12)  # Altera o tamanho da fonte dos nomes dos itens
 
-    # Cria uma lista de rótulos com nome e porcentagem
-    legend_labels = [f"{label} ({porcentagem})" for label, porcentagem in zip(labels, porcentagens)]
+    # Inverter a ordem dos itens para que o maior fique no topo
+    ax.invert_yaxis()
 
-    # Adiciona a legenda fora do gráfico
-    ax.legend(wedges, legend_labels, title="Itens", loc="center left", bbox_to_anchor=(0.85, 0, 0.5, 1))
-
-    # Configura o gráfico para ser "igual"
-    ax.axis('equal')
+    # Ajustar o layout para centralizar e melhorar a apresentação
+    plt.subplots_adjust(left=0.3, right=0.9, top=3.0, bottom=0.2, hspace=1.0)  # Aumentar o espaçamento vertical
 
     # Salvar a imagem em um objeto BytesIO
     buf = io.BytesIO()
-    plt.savefig(buf, format='png')
+    plt.savefig(buf, format='png', bbox_inches='tight')  # Usar bbox_inches='tight' para ajustar a imagem
     buf.seek(0)
     plt.close()
 
@@ -387,7 +392,6 @@ def historico_retiradas_grafico_almo(request):
 
     # Retornar o template com o gráfico
     return render(request, 'historico_retiradas_grafico_almo.html', {'grafico_base64': grafico_base64})
-
 
 def historico_retiradas_grafico(request):
     # Agrupar os dados históricos por nome e somar as retiradas
