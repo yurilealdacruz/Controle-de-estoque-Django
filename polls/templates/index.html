@@ -38,8 +38,6 @@
         }
     }
 
-
-
     function fecharModalRetirar(id) {
         var modal = document.getElementById('modalRetirar_' + id);
         modal.style.display = 'none';
@@ -50,11 +48,17 @@
     }
 </script>
 
-{% if alerta %}
-    <script>
-        alert("{{ alerta }}");
-    </script>
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
+
+<a href="{% url 'adicionar_item' %}" class="btn btn-primary">Adicionar Novo Item</a>
 
 <div class="responsive-table">
     <table class="contacts-table">
@@ -78,7 +82,7 @@
                     <td class="table-cel">{{ dado.estoque }}</td>
                     <td class="table-cel">
                        <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dado.id }}')">| Retirar |</a>
-                       <!--  <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dado.id }}')">Adicionar</a> -->
+                       <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dado.id }}')">| Adicionar |</a>
 
                         <!-- Modal para o item -->
                         <div id="modalRetirar_{{ dado.id }}" class="modalRetirar">
@@ -105,7 +109,6 @@
                         <div id="modalAdicionar_{{ dado.id }}" class="modalRetirar">
                             <div class="modal-content">
                                 <span class="close" onclick="fecharModalAdicionar('{{ dado.id }}')">&times;</span>
-                                <!-- Seu formulário para adicionar aqui -->
                                 <form method="POST" action="{% url 'adicionar_estoque' dado.id %}">
                                     {% csrf_token %}
                                     <label for="quantidade">Quantidade a adicionar:</label>
@@ -121,5 +124,8 @@
         </tbody>
     </table>
 </div>
-
+<footer class="footer">
+    <a href="http://yurilealdacruz.github.io"><p>&copy; 2024 Yuri leal da cruz.</p></a>
+  </footer>
+  
 {% endblock content %}

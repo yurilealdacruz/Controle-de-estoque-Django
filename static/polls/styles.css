@@ -1,31 +1,27 @@
 :root {
-  --spacing: 1.5rem;
-  --link-dark-color: rgb(0, 83, 134);
-  --link-light-color: rgb(156, 217, 255);
-  --clr-white: rgb(245, 245, 255);
-  --clr-black: rgb(0, 0, 30);
-  --clr-light-gray: rgb(230, 230, 245);
-  --clr-dark-shadow-5: rgba(0, 0, 10, 5%);
-  --clr-dark-shadow-10: rgba(0, 0, 10, 10%);
-  --clr-dark-shadow-20: rgba(0, 0, 10, 20%);
-  --clr-light-shadow-5: rgba(200, 200, 255, 5%);
-  --clr-light-shadow-10: rgba(200, 200, 255, 10%);
-  --clr-light-shadow-20: rgba(200, 200, 255, 20%);
+  --spacing: 1rem; /* Reduzido para uma aparência mais compacta */
+  --link-dark-color: #2C3E50; /* Azul escuro */
+  --link-light-color: #ECF0F1; /* Azul claro */
+  --clr-white: #FFFFFF; /* Branco */
+  --clr-black: #34495E; /* Preto suave */
+  --clr-light-gray: #BDC3C7; /* Cinza claro */
+  --clr-dark-shadow-5: rgba(44, 62, 80, 0.05); /* Sombra leve */
+  --clr-dark-shadow-10: rgba(44, 62, 80, 0.1); /* Sombra média */
+  --clr-dark-shadow-20: rgba(44, 62, 80, 0.2); /* Sombra forte */
   --main-page-width: 120rem;
   --table-min-width: 60rem;
-  --biggest-font-size: 5rem;
-  --bigger-font-size: 4rem;
-  --big-font-size: 3.2rem;
-  --medium-font-size: 2.4rem;
-  --small-font-size: 1.6rem;
-  --smaller-font-size: 1.4rem;
-  --smallest-font-size: 1.2rem;
-  --transition-fast: 300ms;
-  --transition-medium: 600ms;
-  --transition-slow: 1s;
-  --default-border-radius: 4px;
+  --biggest-font-size: 4rem; /* Reduzido para um estilo mais contemporâneo */
+  --bigger-font-size: 3.5rem; /* Ajustado para um tamanho mais equilibrado */
+  --big-font-size: 2.8rem; /* Ajustado */
+  --medium-font-size: 2rem; /* Ajustado */
+  --small-font-size: 1.4rem; /* Ajustado */
+  --smaller-font-size: 1.2rem; /* Ajustado */
+  --smallest-font-size: 1rem; /* Ajustado */
+  --transition-fast: 200ms; /* Transição mais rápida */
+  --transition-medium: 400ms; /* Ajustado */
+  --transition-slow: 800ms; /* Ajustado */
+  --default-border-radius: 8px; /* Bordas mais arredondadas */
 }
-
 
 *,
 *::before,
@@ -40,13 +36,11 @@ html {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  line-height: 1.5;
+  font-family: 'Arial', sans-serif; /* Mudança de fonte para uma aparência mais moderna */
+  line-height: 1.6; /* Aumento no espaçamento entre linhas */
   font-size: var(--small-font-size);
   color: var(--clr-black);
-  -webkit-font-smoothing: antialiased;
-  background: var(--clr-light-gray);
+  background: var(--clr-white);
 }
 
 img,
@@ -56,9 +50,9 @@ svg {
 }
 
 .header {
-  background: var(--clr-black);
+  background: var(--link-dark-color); /* Cor de fundo escura */
   padding: var(--spacing);
-  box-shadow: 0 5px 10px 2px var(--clr-dark-shadow-20);
+  box-shadow: 0 4px 15px var(--clr-dark-shadow-20); /* Sombra mais profunda */
   z-index: 1;
   position: relative;
 }
@@ -66,6 +60,7 @@ svg {
 .header-heading {
   font-size: var(--biggest-font-size);
   text-align: center;
+  color: var(--link-light-color); /* Cor do texto clara */
 }
 
 .header-link {
@@ -75,7 +70,7 @@ svg {
 }
 
 .header-link:hover {
-  filter: brightness(70%);
+  filter: brightness(120%); /* Efeito de destaque ao passar o mouse */
 }
 
 .menu {
@@ -96,26 +91,19 @@ svg {
   text-decoration: none;
   transition: background-color var(--transition-fast) ease-in-out;
   border-radius: var(--default-border-radius);
-}
-.menu-link-baixo {
-  display: block;
-  padding: var(--spacing);
-  color: var(--link-light-color);
-  text-decoration: none;
-  transition: background-color var(--transition-fast) ease-in-out;
-  border-radius: var(--default-border-radius);
+  background: rgba(255, 255, 255, 0.1); /* Fundo semi-transparente */
 }
 
 .menu-link:hover {
-  background: var(--clr-light-shadow-10);
+  background: rgba(255, 255, 255, 0.3); /* Efeito de destaque */
 }
 
 .content {
   max-width: var(--main-page-width);
   margin: calc(var(--spacing) * 2) auto;
   padding: var(--spacing);
-  background: var(--clr-white);
-  box-shadow: 2px 2px 5px var(--clr-dark-shadow-20);
+  background: var(--clr-light-gray); /* Cor de fundo suave */
+  box-shadow: 0 4px 10px var(--clr-dark-shadow-10);
   border-radius: var(--default-border-radius);
 }
 
@@ -138,24 +126,24 @@ svg {
 
 .table-row {
   text-align: left;
-  text-overflow: ellipsis;
   transition: background-color var(--transition-fast) ease-in-out;
 }
 
 .table-row:nth-of-type(2n) {
-  background: var(--clr-dark-shadow-5);
+  background: rgba(0, 0, 0, 0.05); /* Alternância de linha mais sutil */
 }
 
 .table-row:not(.table-row-header):hover {
-  background: var(--clr-dark-shadow-10);
+  background: rgba(0, 0, 0, 0.1); /* Destaque ao passar o mouse */
 }
 
 .table-row-header {
   background: var(--clr-light-gray);
   color: var(--clr-black);
+  font-weight: bold; /* Estilo mais ousado para o cabeçalho */
 }
 
-.table-cel,
+.table-cell,
 .table-header {
   padding: var(--spacing);
 }
@@ -167,7 +155,7 @@ svg {
 }
 
 .table-link:hover {
-  color: var(--clr-black);
+  color: #3498DB; /* Cor de destaque ao passar o mouse */
 }
 
 @media (min-width: 600px) {
@@ -179,6 +167,7 @@ svg {
 
 .single-contact h1 {
   margin: 1rem 0;
+  color: var(--link-dark-color); /* Destaque para o título */
 }
 
 .single-contact p {
@@ -214,13 +203,14 @@ svg {
   font-size: var(--medium-font-size);
   padding: 1rem 2rem;
   width: 100%;
-  max-width: 32rem;
+  max-width: 30rem; /* Ajuste na largura máxima */
   border-radius: var(--default-border-radius);
-  border: 1px solid var(--link-light-color);
+  border: 1px solid var(--link-dark-color);
+  background: var(--clr-light-gray); /* Fundo mais suave */
 }
 
 .search-input:focus {
-  box-shadow: 0 0 15px var(--link-light-color);
+  box-shadow: 0 0 10px var(--link-dark-color); /* Efeito de foco mais dramático */
 }
 
 .message {
@@ -234,18 +224,18 @@ svg {
 }
 
 .message.success {
-  background: rgba(0, 255, 0, 0.3);
-  border: 1px solid rgba(0, 255, 0, 90%);
+  background: rgba(46, 204, 113, 0.3); /* Verde suave para sucesso */
+  border: 1px solid rgba(46, 204, 113, 0.8);
 }
 
 .message.error {
-  background: rgba(255, 0, 0, 0.3);
-  border: 1px solid rgba(255, 0, 0, 90%);
+  background: rgba(231, 76, 60, 0.3); /* Vermelho suave para erro */
+  border: 1px solid rgba(231, 76, 60, 0.8);
 }
 
 .message.warning {
-  background: rgba(255, 255, 0, 0.3);
-  border: 1px solid rgba(255, 255, 0, 90%);
+  background: rgba(241, 196, 15, 0.3); /* Amarelo suave para aviso */
+  border: 1px solid rgba(241, 196, 15, 0.8);
 }
 
 .form-wrapper {
@@ -262,11 +252,13 @@ svg {
   flex-direction: column;
   padding-bottom: var(--spacing);
 }
+
 .errorlist {
   list-style: none;
   font-size: var(--smaller-font-size);
-  color: tomato;
+  color: #e74c3c; /* Vermelho para erros */
 }
+
 .errorlist.nonfield {
   color: inherit;
 }
@@ -288,6 +280,7 @@ svg {
   padding: 1rem;
   border-radius: var(--default-border-radius);
   border: 1px solid var(--link-dark-color);
+  background: var(--clr-light-gray); /* Fundo mais suave */
 }
 
 .form-group input:focus,
@@ -303,32 +296,109 @@ svg {
 
 .btn {
   background-color: var(--link-dark-color);
-  color: var(--clr-white);
-  font-weight: bold;
+  color: var(--link-light-color);
+  padding: var(--spacing);
   border: none;
-  padding: 1rem 2rem;
   border-radius: var(--default-border-radius);
+  font-size: var(--medium-font-size);
   cursor: pointer;
-  transition: filter var(--transition-fast) ease-in-out;
+  transition: background-color var(--transition-fast) ease-in-out, transform var(--transition-fast) ease;
 }
 
 .btn:hover {
-  filter: brightness(90%);
+  background-color: #2980b9; /* Cor de destaque mais clara ao passar o mouse */
+  transform: translateY(-2px); /* Efeito de elevação ao passar o mouse */
 }
 
-.btn:focus,
 .btn:active {
-  filter: brightness(80%);
-  box-shadow: 0 0 5px var(--link-dark-color);
+  transform: translateY(1px); /* Efeito de pressão ao clicar */
 }
 
+.footer {
+  background: var(--link-dark-color);
+  color: var(--link-light-color);
+  padding: var(--spacing);
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer p {
+  font-size: var(--small-font-size);
+}
+
+.footer a {
+  color: var(--link-light-color);
+  text-decoration: none;
+  transition: color var(--transition-fast) ease-in-out;
+}
+
+.footer a:hover {
+  color: #3498DB; /* Cor de destaque ao passar o mouse */
+}
+
+.notification {
+  background: rgba(255, 215, 0, 0.1); /* Fundo amarelo suave para notificações */
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  color: #f39c12; /* Texto dourado */
+  padding: var(--spacing);
+  border-radius: var(--default-border-radius);
+  margin: var(--spacing) auto;
+  text-align: center;
+  max-width: 80%;
+}
+
+@media (max-width: 768px) {
+  .header-heading {
+    font-size: var(--bigger-font-size); /* Ajuste em telas menores */
+  }
+
+  .btn {
+    font-size: var(--small-font-size); /* Ajuste do tamanho do botão */
+  }
+
+  .search-input {
+    max-width: 100%; /* Aumenta a largura do campo de pesquisa em telas menores */
+  }
+
+  .menu-list {
+    flex-direction: column; /* Mudança para coluna em telas menores */
+  }
+
+  .menu-link {
+    text-align: center; /* Centraliza links do menu */
+  }
+}
 
 .social-icons {
-  width: 50px; /* Largura do ícone */
-  height: 10px; /* Altura do ícone */
-  cursor: pointer;
-  gap: 15px;
-  justify-content: flex-end;
-  margin-left: auto;
- 
+  display: flex;
+  justify-content: flex-end; /* Alinha os ícones à direita */
+  gap: 20px; /* Espaçamento entre os ícones */
+  margin: 20px 0; /* Margem superior e inferior */
+}
+
+.social-icon {
+  width: 40px; /* Largura do ícone */
+  height: 40px; /* Altura do ícone */
+  transition: transform var(--transition-fast) ease-in-out; /* Efeito ao passar o mouse */
+}
+
+.social-icon:hover {
+  transform: scale(1.1); /* Aumenta o ícone ao passar o mouse */
+}
+.footer {
+  background: var(--link-dark-color);
+  color: var(--link-light-color);
+  padding: var(--spacing);
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  margin-top: 20px; /* Adiciona espaço acima do rodapé */
+}
+
+.footer p {
+  font-size: var(--small-font-size);
+  margin: 0; /* Remove margens para melhor alinhamento */
 }

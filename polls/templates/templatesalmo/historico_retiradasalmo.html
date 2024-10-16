@@ -8,8 +8,8 @@
             <tr>
                 <th>Nome do Insumo</th>
                 <th>Quantidade Retirada</th>
+                <th>Quantidade Adicionada</th>  <!-- Adicione esta coluna -->
                 <th>Data</th>
-                <th>Ação</th>
                 <th>Usuário</th>
             </tr>
         </thead>
@@ -18,8 +18,8 @@
             <tr>
                 <td>{{ historico.nome }}</td>
                 <td>{{ historico.retirada }}</td>
+                <td>{{ historico.adicao }}</td>  <!-- Adicione esta linha -->
                 <td>{{ historico.history_date }}</td>
-                <td>{{ historico.history_type }}</td>
                 <td>{{ historico.history_user}}</td>
             </tr>
             {% endfor %}

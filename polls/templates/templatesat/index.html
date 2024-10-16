@@ -38,8 +38,6 @@
         }
     }
 
-
-
     function fecharModalRetirar(id) {
         var modal = document.getElementById('modalRetirar_' + id);
         modal.style.display = 'none';
@@ -50,12 +48,16 @@
     }
 </script>
 
-{% if alerta %}
-    <script>
-        alert("{{ alerta }}");
-    </script>
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
-
+<a href="{% url 'adicionar_item_at' %}" class="btn btn-primary">Adicionar Novo Item</a>
 <div class="responsive-table">
     <table class="contacts-table">
         <caption class="table-caption">
@@ -78,7 +80,7 @@
                     <td class="table-cel">{{ dadoat.estoque }}</td>
                     <td class="table-cel">
                        <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dadoat.id }}')">| Retirar |</a>
-                       <!--  <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dado.id }}')">Adicionar</a> -->
+                       <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dadoat.id }}')">| Adicionar |</a>
 
                         <!-- Modal para o item -->
                         <div id="modalRetirar_{{ dadoat.id }}" class="modalRetirar">
@@ -89,17 +91,34 @@
                                     <label for="retirada">Quantidade:</label>
                                     <input type="number" id="retirada" name="retirada">
                                     <br>
+                    
                                     <br>
                                     <button type="submit">Atualizar</button>
                                 </form>
                             </div>
                         </div>
 
-                
+                        <!-- Modal para adicionar -->
+                        <div id="modalAdicionar_{{ dadoat.id }}" class="modalRetirar">
+                            <div class="modal-content">
+                                <span class="close" onclick="fecharModalAdicionar('{{ dadoat.id }}')">&times;</span>
+                                <form method="POST" action="{% url 'adicionar_estoque_at' dadoat.id %}">
+                                    {% csrf_token %}
+                                    <label for="quantidade">Quantidade a adicionar:</label>
+                                    <input type="number" id="quantidade" name="quantidade">
+                                    <br>
+                                    <button type="submit">Adicionar</button>
+                                </form>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+<footer class="footer">
+    <a href="http://yurilealdacruz.github.io"><p>&copy; 2024 Yuri leal da cruz.</p></a>
+  </footer>
+  
 {% endblock content %}

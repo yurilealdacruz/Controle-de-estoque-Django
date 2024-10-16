@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import  HttpResponseBadRequest
 from .forms import AdicionarEstoqueForm
-from .models import Estoque, SALA_CHOICES, EstoqueAT, EstoqueAlmo
+from .models import Estoque, SALA_CHOICES, EstoqueAT, EstoqueAlmo, EstoqueHistorico, EstoqueHistoricoAT, EstoqueHistoricoAlmo
 import matplotlib.pyplot as plt
 import io
 import base64
@@ -14,7 +14,9 @@ matplotlib.use('Agg')  # Use o backend Agg para gerar imagens
 from django.shortcuts import render
 from django.db.models import Sum
 from django.contrib.auth import logout
-
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import permission_required
+from .forms import EstoqueAlmoForm, EstoqueATForm, EstoqueForm
 
 
 # Create your views here.
@@ -28,24 +30,49 @@ def index(request):
 def estoqueat(request):
     dadosat = EstoqueAT.objects.all()
     dadosat = EstoqueAT.objects.all().order_by('id')
-    return render(request, 'templatesat/index.html', {"dadosat":dadosat, "salas":SALA_CHOICES})
+    return render(request, 'templatesat/index.html', {"dadosat":dadosat})
 
 def estoquealmo(request):
     dadosalmo = EstoqueAlmo.objects.all()
     dadosalmo = EstoqueAlmo.objects.all().order_by('id')
-    return render(request, 'templatesalmo/index.html', {"dadosalmo":dadosalmo, "salas":SALA_CHOICES})
+    return render(request, 'templatesalmo/index.html', {"dadosalmo":dadosalmo})
 
 
 def buscar_item(request):
-    query = request.GET.get('q')  # Obtenha o parâmetro 'q' da query string (nome do item a ser buscado)
+    query = request.GET.get('q')  # Obtenha o termo de busca
     if query:
-        # Faça a busca no banco de dados pelos itens com o nome semelhante ao que foi buscado
+        # Busque por itens que contenham o termo no nome
         items = Estoque.objects.filter(nome__icontains=query)
     else:
-        items = Estoque.objects.all()  # Se nenhum termo de busca foi fornecido, retorne todos os itens
+        # Se nenhum termo for buscado, mostre todos os itens
+        items = Estoque.objects.all()
+    
+    return render(request, 'index.html', {'dados': items, 'query': query, 'salas': SALA_CHOICES})
 
-    return render(request, 'index.html', {'dados': items, 'query': query})
 
+def buscar_itemAT(request):
+    query = request.GET.get('q')  # Obtenha o termo de busca
+    if query:
+        # Busque por itens que contenham o termo no nome
+        items = EstoqueAT.objects.filter(nome__icontains=query)
+    else:
+        # Se nenhum termo for buscado, mostre todos os itens
+        items = EstoqueAT.objects.all()
+
+    # Renderize o template e passe os itens e salas
+    return render(request, 'templatesat/index.html', {'dadosat': items, 'query': query})
+
+def buscar_itemAlmo(request):
+    query = request.GET.get('q')  # Obtenha o termo de busca
+    if query:
+        # Busque por itens que contenham o termo no nome
+        items = EstoqueAlmo.objects.filter(nome__icontains=query)
+    else:
+        # Se nenhum termo for buscado, mostre todos os itens
+        items = EstoqueAlmo.objects.all()
+
+    # Renderize o template e passe os itens e salas
+    return render(request, 'templatesalmo/index.html', {'dadosalmo': items, 'query': query})
 # def editar_nome(request):
 #     return render(request, 'nome.html')
 
@@ -78,84 +105,169 @@ def profileat(request):
 
 @login_required
 def editar_estoque(request, item_id):
+    try:
+        item = Estoque.objects.get(id=item_id)  # Obter o item primeiro
+    except Estoque.DoesNotExist:
+        messages.error(request, "Item não encontrado.")
+        return redirect('index')
 
-        if request.method == 'POST':
-                try:
-                    retirada = int(request.POST['retirada'])
-                    sala_laboratorio = request.POST['sala_laboratorio']  # Obtém o valor do campo sala_laboratorio
-                except (ValueError, KeyError):
-                    retirada = 0
-                    sala_laboratorio = ''
-                if retirada >= 0:
-                    item = Estoque.objects.get(id=item_id)
-                    item.retirada = retirada
-                    item.sala_laboratorio = sala_laboratorio  # Atualiza o valor do campo sala_laboratorio no objeto Estoque
-                    item.save()
-                    return redirect('index')
-                else:
-                    return HttpResponseBadRequest("Método inválido")
+    if not request.user.has_perm('polls.change_estoque'):
+        messages.error(request, "Você não tem permissão para editar o estoque.")
+        return redirect('index')  # Redireciona para o índice ou a página desejada
 
-        item = Estoque.objects.get(id=item_id)
-        salas_laboratorio = Estoque.objects.values_list('sala_laboratorio', flat=True).distinct()
-        return render(request, 'nome.html', {'item': item, 'salas_laboratorio': salas_laboratorio})
+    if request.method == 'POST':
+        try:
+            retirada = int(request.POST['retirada'])
+            sala_laboratorio = request.POST['sala_laboratorio']  # Obtém o valor do campo sala_laboratorio
+        except (ValueError, KeyError):
+            messages.error(request, "Por favor, forneça um valor válido para retirada e sala.")
+            return redirect('index')  # Redireciona se houver erro
+
+        # Verifica se a quantidade retirada não excede o estoque disponível
+        if retirada >= 0 and retirada <= item.estoque:
+            item.retirada = retirada
+            item.sala_laboratorio = sala_laboratorio  # Atualiza o valor do campo sala_laboratorio
+            item.adicao = 0
+            item.save()
+            messages.success(request, "Estoque atualizado com sucesso.")
+            return redirect('index')
+        else:
+            messages.error(request, "Quantidade de retirada inválida. Você não pode retirar mais do que o disponível em estoque.")
+            return redirect('index')
+
+    salas_laboratorio = Estoque.objects.values_list('sala_laboratorio', flat=True).distinct()
+    return render(request, 'nome.html', {'item': item, 'salas_laboratorio': salas_laboratorio})
 
 @login_required
 def editar_estoqueat(request, item_id):
-
-        if request.method == 'POST':
-                try:
-                    retirada = int(request.POST['retirada'])
-                except (ValueError, KeyError):
-                    retirada = 0
-                if retirada >= 0:
-                    item = EstoqueAT.objects.get(id=item_id)
-                    item.retirada = retirada
-                    item.save()
-                    return redirect('estoqueat')
-                else:
-                    return HttpResponseBadRequest("Método inválido")
-
-        item = EstoqueAT.objects.get(id=item_id)
-        return render(request, 'nome.html', {'item': item})
+    item = EstoqueAT.objects.get(id=item_id)  # Obter o item primeiro
+    
+    if not request.user.has_perm('polls.change_estoque_at'):
+        messages.error(request, "Você não tem permissão para alterar o item.")
+        return redirect('estoqueat')  # Redirecionar para a lista de estoque
+    
+    if request.method == 'POST':
+        try:
+            quantidade_retirada = int(request.POST['retirada'])
+        except (ValueError, KeyError):
+            messages.error(request, "Por favor, forneça um valor válido para retirada.")
+            return redirect('estoqueat')  # Redirecionar para a lista de estoque
+        
+        if quantidade_retirada >= 0 and quantidade_retirada <= item.estoque:
+            item.retirada = quantidade_retirada
+            item.adicao = 0
+            item.save()
+            messages.success(request, "Estoque alterado com sucesso.")
+            return redirect('estoqueat')
+        else:
+            messages.error(request, "Quantidade de retirada inválida. Verifique o estoque disponível.")
+            return redirect('estoqueat')  # Redirecionar para a lista de estoque
+    
+    return render(request, 'nome.html', {'item': item})
 
 @login_required
 def editar_estoquealmo(request, item_id):
+    try:
+        item = EstoqueAlmo.objects.get(id=item_id)  # Obter o item primeiro
+    except EstoqueAlmo.DoesNotExist:
+        messages.error(request, "Item não encontrado.")
+        return redirect('estoquealmo')
 
-        if request.method == 'POST':
-                try:
-                    retirada = int(request.POST['retirada'])
-                except (ValueError, KeyError):
-                    retirada = 0
-                if retirada >= 0:
-                    item = EstoqueAlmo.objects.get(id=item_id)
-                    item.retirada = retirada
-                    item.save()
-                    return redirect('estoquealmo')
-                else:
-                    return HttpResponseBadRequest("Método inválido")
+    if not request.user.has_perm('polls.change_estoque_almo'):
+        messages.error(request, "Você não tem permissão para editar o estoque.")
+        return redirect('estoquealmo')
 
-        item = EstoqueAlmo.objects.get(id=item_id)
-        return render(request, 'nome.html', {'item': item})
+    if request.method == 'POST':
+        try:
+            retirada = int(request.POST['retirada'])
+        except (ValueError, KeyError):
+            messages.error(request, "Por favor, forneça um valor válido para retirada.")
+            return redirect('estoquealmo')
 
+        # Verifica se a quantidade retirada não excede o estoque disponível
+        if retirada >= 0 and retirada <= item.estoque:
+            item.retirada = retirada
+            item.adicao = 0
+            item.save()
+            messages.success(request, "Estoque atualizado com sucesso.")
+            return redirect('estoquealmo')
+        else:
+            messages.error(request, "Quantidade de retirada inválida. Você não pode retirar mais do que o disponível em estoque.")
+            return redirect('estoquealmo')
+
+    return render(request, 'nome.html', {'item': item})
 
 def adicionar_estoque(request, dado_id):
-    if request.method == 'POST':
-        # Obtenha o objeto de dado com base no ID
-        dado = Estoque.objects.get(id=dado_id)
-        # Crie um formulário com os dados enviados pelo usuário
-        form = AdicionarEstoqueForm(request.POST)
-        if form.is_valid():
-            # Obtenha a quantidade a ser adicionada do formulário
-            quantidade = form.cleaned_data['quantidade']
-            # Adicione a quantidade ao estoque do objeto dado
-            dado.estoque += quantidade + 1
-            # Salve o objeto atualizado
-            dado.save()
-            # Redirecione para a página de detalhes do objeto ou para onde desejar
-            return redirect('index')  # Substitua 'nome_da_url' pela URL desejada
+    if not request.user.has_perm('polls.change_estoque'):
+        messages.error(request, "Você não tem permissão para editar o estoque.")
+        return redirect('index')
     else:
-        # Se o método da solicitação não for POST, retorne um erro ou redirecione
-        return HttpResponseBadRequest("Método inválido")
+        if request.method == 'POST':
+            dado = Estoque.objects.get(id=dado_id)
+            form = AdicionarEstoqueForm(request.POST)
+            if form.is_valid():
+                quantidade = form.cleaned_data['quantidade']
+                adicao = quantidade
+                dado.estoque += adicao
+                dado.adicao = adicao # Atualiza o estoque
+                dado.sala_laboratorio = ''
+                dado.retirada = 0
+                dado.save()
+
+                # Adicionando um registro no histórico personalizado
+                EstoqueHistorico.objects.create(estoque=dado, quantidade_adicionada=adicao)
+
+                return redirect('index')
+        else:
+            return HttpResponseBadRequest("Método inválido")
+
+
+def adicionar_estoqueat(request, dado_id):
+    if not request.user.has_perm('polls.change_estoque_at'):
+        messages.error(request, "Você não tem permissão para editar o estoque.")
+        return redirect('estoqueat')
+    else:
+        if request.method == 'POST':
+            dado = EstoqueAT.objects.get(id=dado_id)
+            form = AdicionarEstoqueForm(request.POST)
+            if form.is_valid():
+                quantidade = form.cleaned_data['quantidade']
+                adicao = quantidade
+                dado.estoque += adicao
+                dado.adicao = adicao # Atualiza o estoque
+                dado.retirada = 0
+                dado.save()
+
+                # Adicionando um registro no histórico personalizado
+                EstoqueHistoricoAT.objects.create(estoque=dado, quantidade_adicionada=adicao)
+
+                return redirect('estoqueat')
+        else:
+            return HttpResponseBadRequest("Método inválido")
+    
+
+def adicionar_estoquealmo(request, dado_id):
+    if not request.user.has_perm('polls.change_estoque_almo'):
+        messages.error(request, "Você não tem permissão para editar o estoque.")
+        return redirect('estoquealmo')
+    else:
+        if request.method == 'POST':
+            dado = EstoqueAlmo.objects.get(id=dado_id)
+            form = AdicionarEstoqueForm(request.POST)
+            if form.is_valid():
+                quantidade = form.cleaned_data['quantidade']
+                adicao = quantidade
+                dado.estoque += adicao
+                dado.adicao = adicao # Atualiza o estoque
+                dado.retirada = 0
+                dado.save()
+
+                # Adicionando um registro no histórico personalizado
+                EstoqueHistoricoAlmo.objects.create(estoque=dado, quantidade_adicionada=adicao)
+
+                return redirect('estoquealmo')
+        else:
+            return HttpResponseBadRequest("Método inválido")
 
 def historico_retiradas(request):
     # Obtendo o histórico de retiradas de Estoque
@@ -310,7 +422,9 @@ def historico_retiradas_grafico(request):
     wedges, texts = ax1.pie(sizes, colors=colors, shadow=True, startangle=140)
 
     porcentagens = [f"{size / sum(sizes) * 100:.1f}%" for size in sizes]
-    legend_labels = [f"{label} ({porcentagem})" for label, porcentagem in zip(labels, porcentagens)]
+    # Adiciona a quantidade junto à porcentagem na legenda
+    legend_labels = [f"{label} ({porcentagem}) - {quantidade} retiradas"
+                     for label, porcentagem, quantidade in zip(labels, porcentagens, sizes)]
     ax1.legend(wedges, legend_labels, title="Itens", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
     ax1.set_title("Distribuição de Retiradas por Item")
     ax1.axis('equal')
@@ -351,3 +465,45 @@ def mostrar_grafico(request):
 def realizar_logout(request):
     logout(request)  # Realiza o logout
     return redirect('login')  # Redireciona para a página inicial ou qualquer outra página
+
+def adicionar_item_almo(request):
+    if not request.user.has_perm('polls.change_estoque_almo'):
+        raise PermissionDenied("Você não tem permissão para editar o estoque.")
+    else:
+        if request.method == 'POST':
+            form = EstoqueAlmoForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect('estoquealmo')  # Redirecione para a página inicial ou para onde você quiser
+        else:
+            form = EstoqueAlmoForm()
+        return render(request, 'adicionar_item_almo.html', {'form': form})
+    
+
+def adicionar_item(request):
+    if not request.user.has_perm('polls.change_estoque'):
+        messages.error(request, "Você não tem permissão para editar o estoque.")
+        return redirect('index')  # Redireciona para o índice ou a página desejada
+    else:
+        if request.method == 'POST':
+            form = EstoqueForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect('index')  # Redirecione para a página inicial ou para onde você quiser
+        else:
+            form = EstoqueForm()
+        return render(request, 'adicionar_item.html', {'form': form})
+    
+
+def adicionar_item_at(request):
+    if not request.user.has_perm('polls.change_estoque_at'):
+        raise PermissionDenied("Você não tem permissão para editar o estoque.")
+    else:
+        if request.method == 'POST':
+            form = EstoqueATForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect('estoqueat')  # Redirecione para a página inicial ou para onde você quiser
+        else:
+            form = EstoqueATForm()
+        return render(request, 'adicionar_item_at.html', {'form': form})

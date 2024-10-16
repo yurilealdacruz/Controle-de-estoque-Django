@@ -98,6 +98,7 @@ class Estoque(models.Model):
     sala_laboratorio = models.CharField(max_length=50, choices=SALA_CHOICES,blank=True)
     foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
     history = HistoricalRecords()
+    adicao = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f'{self.nome}'
@@ -112,7 +113,7 @@ class Estoque(models.Model):
             self.estoque -= self.retirada
             self.save()  # Salva o objeto após subtrair a retirada do estoque
             self.retirada = 0  # Reseta o valor de retirada após a operação
-            super().save()  # Salva novamente para refletir o valor de retirada zerado      
+            super().save()  # Salva novamente para refletir o valor de retirada zerado   
 
 class EstoqueAT(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -122,6 +123,7 @@ class EstoqueAT(models.Model):
     data_estoque = models.DateTimeField(default=timezone.now)
     foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
     history = HistoricalRecords()
+    adicao = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f'{self.nome}'
@@ -137,15 +139,21 @@ class EstoqueAT(models.Model):
             self.save()  # Salva o objeto após subtrair a retirada do estoque
             self.retirada = 0  # Reseta o valor de retirada após a operação
             super().save()  # Salva novamente para refletir o valor de retirada zerado
+    class Meta:
+        permissions = [
+            ("change_estoque_at", "Pode editar Estoque AT"),
+        ]
 
 class EstoqueAlmo(models.Model):
     id = models.BigAutoField(primary_key=True)
     nome = models.CharField(max_length=50)
     retirada = models.IntegerField(default=0)
     estoque = models.IntegerField()
+    endereco = models.CharField(max_length=255, default="Sem registro de localização")
     data_estoque = models.DateTimeField(default=timezone.now)
     foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
     history = HistoricalRecords()
+    adicao = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f'{self.nome}'
@@ -161,6 +169,11 @@ class EstoqueAlmo(models.Model):
             self.save()  # Salva o objeto após subtrair a retirada do estoque
             self.retirada = 0  # Reseta o valor de retirada após a operação
             super().save()  # Salva novamente para refletir o valor de retirada zerado
+
+    class Meta:
+        permissions = [
+            ("change_estoque_almo", "Pode editar Estoque Almo"),
+        ]
 
 
 class Demanda(models.Model):
@@ -174,3 +187,28 @@ class Demanda(models.Model):
 
     def __str__(self) -> str:
         return f'{self.titulo}'
+
+class EstoqueHistorico(models.Model):
+    estoque = models.ForeignKey(Estoque, on_delete=models.CASCADE)
+    quantidade_adicionada = models.IntegerField()
+    data = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def nome(self):
+        return self.estoque.nome  # Adiciona um método para pegar o nome do estoque
+class EstoqueHistoricoAT(models.Model):
+    estoque = models.ForeignKey(EstoqueAT, on_delete=models.CASCADE)
+    quantidade_adicionada = models.IntegerField()
+    data = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def nome(self):
+        return self.estoque.nome  # Adiciona um método para pegar o nome do estoque
+class EstoqueHistoricoAlmo(models.Model):
+    estoque = models.ForeignKey(EstoqueAlmo, on_delete=models.CASCADE)
+    quantidade_adicionada = models.IntegerField()
+    data = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def nome(self):
+        return self.estoque.nome  # Adiciona um método para pegar o nome do estoque

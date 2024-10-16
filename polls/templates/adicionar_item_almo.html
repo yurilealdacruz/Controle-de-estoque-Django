@@ -1,0 +1,12 @@
+{% extends 'globalalmo/base.html' %}
+
+{% block content %}
+
+  <h2>Adicionar Novo Item ao Estoque</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Adicionar</button>
+  </form>
+
+  {% endblock content %}

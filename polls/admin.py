@@ -29,7 +29,7 @@ class EstoqueATAdmin(SimpleHistoryAdmin):
 
 
 class EstoqueATAlmo(SimpleHistoryAdmin):
-    list_display = 'id', 'nome', 'estoque', 'retirada',
+    list_display = 'id', 'nome', 'estoque', 'retirada', 'endereco'
     ordering = 'id',
     # list_filter = 'created_date',
     search_fields = 'id', 'nome',
