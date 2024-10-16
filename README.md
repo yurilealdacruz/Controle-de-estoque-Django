@@ -1,29 +1,38 @@
 
-# Controle de Estoque e Rastreabilidade - Projeto em Estado Inicial
-
-Este projeto tem como objetivo fornecer uma solução para controle de estoque e rastreabilidade de retiradas, atribuindo responsabilidade às pessoas envolvidas. Atualmente, encontra-se em um estado inicial de desenvolvimento.
+# Controle de Estoque e Rastreabilidade 
+Este projeto tem como objetivo fornecer uma solução para controle de estoque e rastreabilidade de retiradas, atribuindo responsabilidade às pessoas envolvidas.
 
 ## Capturas de Tela
 
 ### Aparência
-![Aparência do Sistema](https://github.com/yurilealdacruz/Controle-de-estoque-Django/assets/100494057/f9c9fbce-779b-4826-aea3-ba1f126406e7)
+![Aparência](https://github.com/user-attachments/assets/2bd4808a-7df8-43be-9f34-44d3a3da591b)
 
-### Modal Integrado com Django e PostgreSQL
-![Modal Integrado](https://github.com/yurilealdacruz/Controle-de-estoque-Django/assets/100494057/3b89661e-7f4d-4558-99ec-1d10a2f7a729)
+
+### Histórico de retiradas
+![Histórico](https://github.com/user-attachments/assets/cf680b7b-8658-4739-8a9c-8976e18e5a13)
+
 
 ### Função de Retirada Atualizando Valores
-![Função de Retirada](https://github.com/yurilealdacruz/Controle-de-estoque-Django/assets/100494057/0c49f182-ee11-406b-99f0-f74f09f93e72)
+![Função para retirada](https://github.com/user-attachments/assets/77962ae9-828f-4eb7-b2ad-9566a083f109)
 
-### Models no Django Admin
-![Models no Django Admin](https://github.com/yurilealdacruz/Controle-de-estoque-Django/assets/100494057/79135d2f-e078-4c86-83e4-97e70698d6dc)
 
 ### Adicionando Itens no Estoque
-![Adicionando Itens](https://github.com/yurilealdacruz/Controle-de-estoque-Django/assets/100494057/d0a9d62d-7b46-49ff-83bc-d4818d63fb5b)
+![Adicionando Item](https://github.com/user-attachments/assets/b32d1a2e-f209-4158-8db1-66706e4de3ab)
+
+### Página de Login
+![Login](https://github.com/user-attachments/assets/652880e2-feb9-48cd-bff7-64caff866dd4)
+
+### Histórico com Gráfico
+![Gráfico](https://github.com/user-attachments/assets/1546ffda-5330-4c14-b054-975713329b00)
+
 
 ## Requisitos
 
 Para utilizar este projeto, você precisará ter os seguintes requisitos instalados:
 
 - Django: `pip install django`
-- Psycopg2: `pip install psycopg2`
-- Django Simple History: `pip install django-simple-history`
+- Banco de dados MySql: `pip install mysql-connector-python`
+- Para vizualização do histório Django Simple History: `pip install django-simple-history`
+- Para o gráfico: `pip install matplotlib`
+- Para gerar imagens: `pip install pillow`
+
