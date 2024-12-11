@@ -2,6 +2,13 @@
 
 {% block content %}
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
 <style>
     .modalRetirar {
         display: none;
@@ -61,7 +68,7 @@
 <a href="{% url 'adicionar_item' %}" class="btn btn-primary">Adicionar Novo Item</a>
 
 <div class="responsive-table">
-    <table class="contacts-table">
+    <table id="tabelaInsumos" class="contacts-table">
         <caption class="table-caption">
             Insumos
             {{ sala }}
@@ -127,5 +134,14 @@
 <footer class="footer">
     <a href="http://yurilealdacruz.github.io"><p>&copy; 2024 Yuri leal da cruz.</p></a>
   </footer>
-  
+  <script>
+    $(document).ready(function() {
+        $('#tabelaInsumos').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Portuguese-Brasil.json'
+            }
+        });
+    });
+</script>
+
 {% endblock content %}

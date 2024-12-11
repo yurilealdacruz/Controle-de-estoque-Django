@@ -21,6 +21,7 @@ from .forms import EstoqueAlmoForm, EstoqueATForm, EstoqueForm
 
 
 
+
 # Create your views here.
 
 
@@ -511,3 +512,4 @@ def adicionar_item_at(request):
         else:
             form = EstoqueATForm()
         return render(request, 'adicionar_item_at.html', {'form': form})
+    
