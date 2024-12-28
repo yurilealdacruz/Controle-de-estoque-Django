@@ -79,6 +79,7 @@
                 <th class="table-header">ID</th>
                 <th class="table-header">Nome</th>
                 <th class="table-header">Localização</th>
+                <th class="table-header">Infra | TI</th>
                 <th class="table-header">Quantidade</th>
                 <th class="table-header">Opção</th>
             </tr>
@@ -89,6 +90,7 @@
                     <td class="table-cel">{{ dadoalmo.id }}</td>
                     <td class="table-cel">{{ dadoalmo.nome }}</td>
                     <td class="table-cel">{{ dadoalmo.endereco }}</td>
+                    <td class="table-cel">{{ dadoalmo.categoria }}</td>
                     <td class="table-cel">{{ dadoalmo.estoque }}</td>
                     <td class="table-cel">
                        <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dadoalmo.id }}')">| Retirar |</a>

@@ -82,7 +82,6 @@ SALA_CHOICES = [
 ]
 
 
-
 from django.db import models
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
@@ -154,6 +153,21 @@ class EstoqueAlmo(models.Model):
     foto = models.ImageField(upload_to='fotos/', default='caminho_para_a_imagem.jpg')
     history = HistoricalRecords()
     adicao = models.IntegerField(default=0)
+
+        
+    INFRA = 'INFRA'
+    TI = 'TI'
+    
+    CATEGORIAS = [
+        (INFRA, 'Infra'),
+        (TI, 'TI'),
+    ]
+    categoria = models.CharField(
+        max_length=6,
+        choices=CATEGORIAS,
+        default=TI,  # Valor padrão (opcional), pode ser 'INF' ou 'TI'
+    )
+
 
     def __str__(self) -> str:
         return f'{self.nome}'
