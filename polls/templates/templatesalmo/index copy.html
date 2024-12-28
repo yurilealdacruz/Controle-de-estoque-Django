@@ -8,7 +8,7 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <style>
-    .modalRetirar, .modalAdicionar, .modalEditar {
+    .modalRetirar, .modalEditar, .modalAdicionar {
         display: none;
         position: fixed;
         top: 50%;
@@ -19,6 +19,26 @@
         padding: 20px;
         border: 1px solid #ccc;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-content {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .close {
+        font-size: 30px;
+        font-weight: bold;
+        color: #000;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .close:hover {
+        color: red;
     }
 </style>
 
@@ -39,28 +59,18 @@
     }
 
     function abrirModalRetirar(id) {
-        var isAuthenticated = "{{ user.is_authenticated }}";
-        if (isAuthenticated === "True") {
-            var modal = document.getElementById('modalRetirar_' + id);
-            modal.style.display = 'block';
-        } else {
-            alert("Você precisa estar logado para editar.");
-        }
-    }
-
-    function abrirModalAdicionar(id) {
-        var isAuthenticated = "{{ user.is_authenticated }}";
-        if (isAuthenticated === "True") {
-            var modal = document.getElementById('modalAdicionar_' + id);
-            modal.style.display = 'block';
-        } else {
-            alert("Você precisa estar logado para editar.");
-        }
+        var modal = document.getElementById('modalRetirar_' + id);
+        modal.style.display = 'block';
     }
 
     function fecharModalRetirar(id) {
         var modal = document.getElementById('modalRetirar_' + id);
         modal.style.display = 'none';
+    }
+
+    function abrirModalAdicionar(id) {
+        var modal = document.getElementById('modalAdicionar_' + id);
+        modal.style.display = 'block';
     }
 
     function fecharModalAdicionar(id) {
@@ -80,12 +90,12 @@
 {% endif %}
 <a href="{% url 'adicionar_item_almo' %}" class="btn btn-primary">Adicionar Novo Item</a>
 <div class="responsive-table">
-    <table  id="tabelaInsumos" class="contacts-table">
+    <table id="tabelaInsumos" class="contacts-table">
         <caption class="table-caption">
             Insumos
             {{ sala }}
         </caption>
-        
+
         <thead>
             <tr class="table-row table-row-header">
                 <th class="table-header">ID</th>
@@ -108,8 +118,8 @@
                     <td class="table-cel">{{ dadoalmo.categoria }}</td>
                     <td class="table-cel">{{ dadoalmo.estoque }}</td>
                     <td class="table-cel">
-                       <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dadoalmo.id }}')">| Retirar |</a>
-                       <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dadoalmo.id }}')">| Adicionar |</a>
+                        <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dadoalmo.id }}')">| Retirar |</a>
+                        <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dadoalmo.id }}')">| Adicionar |</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -117,7 +127,7 @@
     </table>
 </div>
 
-<!-- Modal para Editar -->
+<!-- Novo Modal para Editar -->
 {% for dadoalmo in dadosalmo %}
     <div id="modalEditar_{{ dadoalmo.id }}" class="modalEditar">
         <div class="modal-content">
@@ -146,40 +156,6 @@
                 <br>
 
                 <button type="submit">Salvar alterações</button>
-            </form>
-        </div>
-    </div>
-{% endfor %}
-
-<!-- Modal para Retirar -->
-{% for dadoalmo in dadosalmo %}
-    <div id="modalRetirar_{{ dadoalmo.id }}" class="modalRetirar">
-        <div class="modal-content">
-            <span class="close" onclick="fecharModalRetirar('{{ dadoalmo.id }}')">&times;</span>
-            <form method="POST" action="{% url 'editar_estoquealmo' dadoalmo.id %}">
-                {% csrf_token %}
-                <label for="retirada">Quantidade:</label>
-                <input type="number" id="retirada" name="retirada">
-                <br>
-
-                <br>
-                <button type="submit">Atualizar</button>
-            </form>
-        </div>
-    </div>
-{% endfor %}
-
-<!-- Modal para Adicionar -->
-{% for dadoalmo in dadosalmo %}
-    <div id="modalAdicionar_{{ dadoalmo.id }}" class="modalRetirar">
-        <div class="modal-content">
-            <span class="close" onclick="fecharModalAdicionar('{{ dadoalmo.id }}')">&times;</span>
-            <form method="POST" action="{% url 'adicionar_estoque_almo' dadoalmo.id %}">
-                {% csrf_token %}
-                <label for="quantidade">Quantidade a adicionar:</label>
-                <input type="number" id="quantidade" name="quantidade">
-                <br>
-                <button type="submit">Adicionar</button>
             </form>
         </div>
     </div>
