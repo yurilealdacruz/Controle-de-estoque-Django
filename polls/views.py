@@ -18,6 +18,8 @@ from django.contrib.auth import logout
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import permission_required
 from .forms import EstoqueAlmoForm, EstoqueATForm, EstoqueForm
+from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponse
 
 
 
@@ -512,4 +514,18 @@ def adicionar_item_at(request):
         else:
             form = EstoqueATForm()
         return render(request, 'adicionar_item_at.html', {'form': form})
-    
+
+
+
+
+def editar_estoquealmo(request, item_id):
+    if request.method == 'POST':
+        item = get_object_or_404(EstoqueAlmo, pk=item_id)  # Substitua 'SuaModel' pelo nome do seu modelo
+        item.retirada = 0  # Sempre define retirada como 0
+        item.nome = request.POST.get('nome', item.nome)  # Atualiza o nome se enviado
+        item.endereco = request.POST.get('endereco', item.endereco)  # Atualiza a localização se enviado
+        item.estoque = int(request.POST.get('estoque', item.estoque))  # Atualiza o estoque
+        item.categoria = request.POST.get('categoria', item.categoria)  # Atualiza a categoria
+        item.save()
+        return redirect('estoquealmo')  # Substitua pelo nome da página onde deseja redirecionar
+    return HttpResponse("Método inválido", status=400)

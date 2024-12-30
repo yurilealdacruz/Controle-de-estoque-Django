@@ -38,6 +38,27 @@
         modal.style.display = 'none';
     }
 
+    function salvarEdicao(id) {
+    var formData = {
+        nome: $("#modalEditar_" + id + " #nome").val(),
+        endereco: $("#modalEditar_" + id + " #endereco").val(),
+        estoque: $("#modalEditar_" + id + " #estoque").val(),
+        categoria: $("#modalEditar_" + id + " #categoria").val(),
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+    };
+
+    $.post("/editar_estoquealmo/" + id + "/", formData, function(response) {
+        alert("Item atualizado com sucesso!");
+        location.reload();  // Recarrega a página para atualizar os dados
+    }).fail(function() {
+        alert("Ocorreu um erro ao salvar os dados.");
+    });
+}
+
+
+
+
+
     function abrirModalRetirar(id) {
         var isAuthenticated = "{{ user.is_authenticated }}";
         if (isAuthenticated === "True") {
@@ -123,6 +144,7 @@
         <div class="modal-content">
             <span class="close" onclick="fecharModalEditar('{{ dadoalmo.id }}')">&times;</span>
             <form method="POST" action="{% url 'editar_estoquealmo' dadoalmo.id %}">
+
                 {% csrf_token %}
                 <h3>Editar Item: {{ dadoalmo.nome }}</h3>
 
@@ -137,7 +159,6 @@
                 <label for="estoque">Estoque:</label>
                 <input type="number" id="estoque" name="estoque" value="{{ dadoalmo.estoque }}" required>
                 <br>
-
                 <label for="categoria">Categoria:</label>
                 <select name="categoria" id="categoria" required>
                     <option value="INFRA" {% if dadoalmo.categoria == 'INFRA' %}selected{% endif %}>Infra</option>
@@ -145,7 +166,7 @@
                 </select>
                 <br>
 
-                <button type="submit">Salvar alterações</button>
+                <button type="button" onclick="salvarEdicao('{{ dadoalmo.id }}')">Salvar alterações</button>
             </form>
         </div>
     </div>
