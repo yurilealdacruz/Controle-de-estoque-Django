@@ -522,6 +522,7 @@ def editar_estoquealmo(request, item_id):
     if request.method == 'POST':
         item = get_object_or_404(EstoqueAlmo, pk=item_id)  # Substitua 'SuaModel' pelo nome do seu modelo
         item.retirada = 0  # Sempre define retirada como 0
+        item.adicao = 0
         item.nome = request.POST.get('nome', item.nome)  # Atualiza o nome se enviado
         item.endereco = request.POST.get('endereco', item.endereco)  # Atualiza a localização se enviado
         item.estoque = int(request.POST.get('estoque', item.estoque))  # Atualiza o estoque
