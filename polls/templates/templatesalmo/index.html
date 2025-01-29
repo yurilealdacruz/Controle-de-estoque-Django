@@ -177,7 +177,7 @@
     <div id="modalRetirar_{{ dadoalmo.id }}" class="modalRetirar">
         <div class="modal-content">
             <span class="close" onclick="fecharModalRetirar('{{ dadoalmo.id }}')">&times;</span>
-            <form method="POST" action="{% url 'editar_estoquealmo' dadoalmo.id %}">
+            <form method="POST" action="{% url 'retirar_estoquealmo' dadoalmo.id %}">
                 {% csrf_token %}
                 <label for="retirada">Quantidade:</label>
                 <input type="number" id="retirada" name="retirada">

@@ -24,7 +24,7 @@ urlpatterns = [
 
     path("editar_estoque/<int:item_id>/", views.editar_estoque, name="editar_estoque"),
     path("editar_estoqueat/<int:item_id>/", views.editar_estoqueat, name="editar_estoqueat"),
-    path("editar_estoquealmo/<int:item_id>/", views.editar_estoquealmo, name="editar_estoquealmo"),
+    path("retirar_estoquealmo/<int:item_id>/", views.retirar_estoquealmo, name="retirar_estoquealmo"),
 
     path('historico_retiradas/', views.historico_retiradas, name='historico_retiradas'),
     path('historico_retiradasat/', views.historico_retiradasAT, name='historico_retiradasat'),
@@ -45,6 +45,6 @@ urlpatterns = [
     path('adicionar_item_almo/', views.adicionar_item_almo, name='adicionar_item_almo'),
     path('adicionar_item_at/', views.adicionar_item_at, name='adicionar_item_at'),
 
-    path('editar_estoquealmo/<int:id>/', views.editar_estoquealmo, name='editar_estoquealmo'),
+    path('editar_estoquealmo/<int:item_id>/', views.editar_estoquealmo, name='editar_estoquealmo'),
     
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)

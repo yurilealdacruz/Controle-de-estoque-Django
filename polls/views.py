@@ -171,12 +171,9 @@ def editar_estoqueat(request, item_id):
     return render(request, 'nome.html', {'item': item})
 
 @login_required
-def editar_estoquealmo(request, item_id):
-    try:
-        item = EstoqueAlmo.objects.get(id=item_id)  # Obter o item primeiro
-    except EstoqueAlmo.DoesNotExist:
-        messages.error(request, "Item não encontrado.")
-        return redirect('estoquealmo')
+def retirar_estoquealmo(request, item_id):
+    item = EstoqueAlmo.objects.get(id=item_id)  # Obter o item primeiro
+
 
     if not request.user.has_perm('polls.change_estoque_almo'):
         messages.error(request, "Você não tem permissão para editar o estoque.")
@@ -185,6 +182,7 @@ def editar_estoquealmo(request, item_id):
     if request.method == 'POST':
         try:
             retirada = int(request.POST['retirada'])
+            print("Teste2")
         except (ValueError, KeyError):
             messages.error(request, "Por favor, forneça um valor válido para retirada.")
             return redirect('estoquealmo')
@@ -194,6 +192,7 @@ def editar_estoquealmo(request, item_id):
             item.retirada = retirada
             item.adicao = 0
             item.save()
+
             messages.success(request, "Estoque atualizado com sucesso.")
             return redirect('estoquealmo')
         else:
@@ -203,6 +202,7 @@ def editar_estoquealmo(request, item_id):
     return render(request, 'nome.html', {'item': item})
 
 def adicionar_estoque(request, dado_id):
+    
     if not request.user.has_perm('polls.change_estoque'):
         messages.error(request, "Você não tem permissão para editar o estoque.")
         return redirect('index')
@@ -252,6 +252,7 @@ def adicionar_estoqueat(request, dado_id):
     
 
 def adicionar_estoquealmo(request, dado_id):
+    
     if not request.user.has_perm('polls.change_estoque_almo'):
         messages.error(request, "Você não tem permissão para editar o estoque.")
         return redirect('estoquealmo')
@@ -266,7 +267,6 @@ def adicionar_estoquealmo(request, dado_id):
                 dado.adicao = adicao # Atualiza o estoque
                 dado.retirada = 0
                 dado.save()
-
                 # Adicionando um registro no histórico personalizado
                 EstoqueHistoricoAlmo.objects.create(estoque=dado, quantidade_adicionada=adicao)
 
@@ -528,5 +528,6 @@ def editar_estoquealmo(request, item_id):
         item.estoque = int(request.POST.get('estoque', item.estoque))  # Atualiza o estoque
         item.categoria = request.POST.get('categoria', item.categoria)  # Atualiza a categoria
         item.save()
+        print('teste')
         return redirect('estoquealmo')  # Substitua pelo nome da página onde deseja redirecionar
     return HttpResponse("Método inválido", status=400)
