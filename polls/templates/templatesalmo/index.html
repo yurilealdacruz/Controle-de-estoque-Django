@@ -109,7 +109,7 @@
         
         <thead>
             <tr class="table-row table-row-header">
-                <th class="table-header">ID</th>
+                <th class="table-header">N⁰</th> <!-- Coluna Sequencial -->
                 <th class="table-header">Nome</th>
                 <th class="table-header">Localização</th>
                 <th class="table-header">Infra | TI</th>
@@ -120,7 +120,7 @@
         <tbody>
             {% for dadoalmo in dadosalmo %}
                 <tr class="table-row">
-                    <td class="table-cel">{{ dadoalmo.id }}</td>
+                    <td class="table-cel"></td> <!-- Número sequencial -->
                     <td class="table-cel">
                         <!-- Nome agora é clicável e abrirá o modal de edição -->
                         <a href="#" style="text-decoration: none; color: black;" onclick="abrirModalEditar('{{ dadoalmo.id }}')">{{ dadoalmo.nome }}</a>
@@ -211,13 +211,18 @@
 </footer>
 
 <script>
-    $(document).ready(function() {
-        $('#tabelaInsumos').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Portuguese-Brasil.json'
-            }
-        });
+    $('#tabelaInsumos').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Portuguese-Brasil.json'
+        },
+        pageLength: 999,
+        lengthMenu: [ [10, 25, 50, 100, 999], [10, 25, 50, 100, 999] ],
+        rowCallback: function(row, data, index) {
+            // Preenche a coluna de número sequencial
+            $('td', row).eq(0).html(index + 1); // index começa de 0, então somamos 1
+        }
     });
+
 </script>
 
 {% endblock content %}

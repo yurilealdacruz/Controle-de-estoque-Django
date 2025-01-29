@@ -37,6 +37,7 @@ def estoqueat(request):
     dadosat = EstoqueAT.objects.all().order_by('id')
     return render(request, 'templatesat/index.html', {"dadosat":dadosat})
 
+
 def estoquealmo(request):
     dadosalmo = EstoqueAlmo.objects.all()
     dadosalmo = EstoqueAlmo.objects.all().order_by('id')
