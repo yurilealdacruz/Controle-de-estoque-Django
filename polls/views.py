@@ -532,3 +532,12 @@ def editar_estoquealmo(request, item_id):
         print('teste')
         return redirect('estoquealmo')  # Substitua pelo nome da página onde deseja redirecionar
     return HttpResponse("Método inválido", status=400)
+
+
+@login_required
+def deletar_estoquealmo(request, item_id):
+    if request.method == "POST":
+        item = get_object_or_404(EstoqueAlmo, id=item_id)
+        item.delete()
+        messages.success(request, "Item excluído com sucesso!")
+    return redirect('estoquealmo') 

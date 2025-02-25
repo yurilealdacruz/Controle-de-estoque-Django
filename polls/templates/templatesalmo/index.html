@@ -144,7 +144,6 @@
         <div class="modal-content">
             <span class="close" onclick="fecharModalEditar('{{ dadoalmo.id }}')">&times;</span>
             <form method="POST" action="{% url 'editar_estoquealmo' dadoalmo.id %}">
-
                 {% csrf_token %}
                 <h3>Editar Item: {{ dadoalmo.nome }}</h3>
 
@@ -159,6 +158,7 @@
                 <label for="estoque">Estoque:</label>
                 <input type="number" id="estoque" name="estoque" value="{{ dadoalmo.estoque }}" required>
                 <br>
+
                 <label for="categoria">Categoria:</label>
                 <select name="categoria" id="categoria" required>
                     <option value="INFRA" {% if dadoalmo.categoria == 'INFRA' %}selected{% endif %}>Infra</option>
@@ -166,11 +166,18 @@
                 </select>
                 <br>
 
-                <button type="button" onclick="salvarEdicao('{{ dadoalmo.id }}')">Salvar alterações</button>
+                <button type="submit">Salvar alterações</button>
+            </form>
+
+            <!-- Botão para excluir o item -->
+            <form method="POST" action="{% url 'deletar_estoquealmo' dadoalmo.id %}" onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
+                {% csrf_token %}
+                <button type="submit" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
             </form>
         </div>
     </div>
 {% endfor %}
+
 
 <!-- Modal para Retirar -->
 {% for dadoalmo in dadosalmo %}

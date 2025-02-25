@@ -46,5 +46,8 @@ urlpatterns = [
     path('adicionar_item_at/', views.adicionar_item_at, name='adicionar_item_at'),
 
     path('editar_estoquealmo/<int:item_id>/', views.editar_estoquealmo, name='editar_estoquealmo'),
+
+
+    path('deletar/<int:item_id>/', views.deletar_estoquealmo, name='deletar_estoquealmo'),
     
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)
