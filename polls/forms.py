@@ -9,16 +9,16 @@ class AdicionarEstoqueForm(forms.Form):
 class EstoqueForm(forms.ModelForm):
     class Meta:
         model = Estoque
-        fields = ['nome', 'estoque', 'sala_laboratorio', 'foto']  
-    
+        fields = ['nome', 'estoque', 'sala_laboratorio', 'foto']
+
 
 
 class EstoqueAlmoForm(forms.ModelForm):
     class Meta:
         model = EstoqueAlmo
-        fields = ['nome', 'estoque', 'endereco', 'categoria', 'foto']  
-    
+        fields = ['nome', 'estoque', 'endereco', 'categoria', 'foto']
+
 class EstoqueATForm(forms.ModelForm):
     class Meta:
         model = EstoqueAT
-        fields = ['nome', 'estoque', 'foto']  
+        fields = ['nome', 'estoque', 'foto']

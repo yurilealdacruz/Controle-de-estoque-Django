@@ -82,6 +82,7 @@ SALA_CHOICES = [
 ]
 
 
+
 from django.db import models
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
@@ -99,6 +100,7 @@ class Estoque(models.Model):
     history = HistoricalRecords()
     adicao = models.IntegerField(default=0)
 
+
     def __str__(self) -> str:
         return f'{self.nome}'
 
@@ -112,7 +114,7 @@ class Estoque(models.Model):
             self.estoque -= self.retirada
             self.save()  # Salva o objeto após subtrair a retirada do estoque
             self.retirada = 0  # Reseta o valor de retirada após a operação
-            super().save()  # Salva novamente para refletir o valor de retirada zerado   
+            super().save()  # Salva novamente para refletir o valor de retirada zerado
 
 class EstoqueAT(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -146,6 +148,7 @@ class EstoqueAT(models.Model):
 class EstoqueAlmo(models.Model):
     id = models.BigAutoField(primary_key=True)
     nome = models.CharField(max_length=50)
+    modelo = models.CharField(max_length=255, default="Nenhum")
     retirada = models.IntegerField(default=0)
     estoque = models.IntegerField()
     endereco = models.CharField(max_length=255, default="Sem registro de localização")
@@ -154,14 +157,16 @@ class EstoqueAlmo(models.Model):
     history = HistoricalRecords()
     adicao = models.IntegerField(default=0)
 
-        
     INFRA = 'INFRA'
     TI = 'TI'
-    
+    OBRA = 'OBRA'
+
     CATEGORIAS = [
         (INFRA, 'Infra'),
         (TI, 'TI'),
+        (OBRA, 'OBRA'),
     ]
+
     categoria = models.CharField(
         max_length=6,
         choices=CATEGORIAS,

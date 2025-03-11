@@ -106,11 +106,12 @@
             Insumos
             {{ sala }}
         </caption>
-        
+
         <thead>
             <tr class="table-row table-row-header">
                 <th class="table-header">N⁰</th> <!-- Coluna Sequencial -->
                 <th class="table-header">Nome</th>
+                <th class="table-header">Modelo</th>
                 <th class="table-header">Localização</th>
                 <th class="table-header">Infra | TI</th>
                 <th class="table-header">Quantidade</th>
@@ -125,6 +126,7 @@
                         <!-- Nome agora é clicável e abrirá o modal de edição -->
                         <a href="#" style="text-decoration: none; color: black;" onclick="abrirModalEditar('{{ dadoalmo.id }}')">{{ dadoalmo.nome }}</a>
                     </td>
+                    <td class="table-cel">{{ dadoalmo.modelo }}</td>
                     <td class="table-cel">{{ dadoalmo.endereco }}</td>
                     <td class="table-cel">{{ dadoalmo.categoria }}</td>
                     <td class="table-cel">{{ dadoalmo.estoque }}</td>
@@ -151,6 +153,10 @@
                 <input type="text" id="nome" name="nome" value="{{ dadoalmo.nome }}" required>
                 <br>
 
+                <label for="modelo">Modelo:</label>
+                <input type="text" id="modelo" name="modelo" value="{{ dadoalmo.modelo }}" required>
+                <br>
+
                 <label for="endereco">Localização:</label>
                 <input type="text" id="endereco" name="endereco" value="{{ dadoalmo.endereco }}" required>
                 <br>
@@ -163,6 +169,7 @@
                 <select name="categoria" id="categoria" required>
                     <option value="INFRA" {% if dadoalmo.categoria == 'INFRA' %}selected{% endif %}>Infra</option>
                     <option value="TI" {% if dadoalmo.categoria == 'TI' %}selected{% endif %}>TI</option>
+                    <option value="OBRA" {% if dadoalmo.categoria == 'OBRA' %}selected{% endif %}>OBRA</option>
                 </select>
                 <br>
 

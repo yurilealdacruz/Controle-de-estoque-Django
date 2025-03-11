@@ -8,8 +8,8 @@ from . import views
 
 urlpatterns = [
     path("estoque/", views.index, name="index"),
-    path("estoqueat/", views.estoqueat, name="estoqueat"), 
-    path("estoquealmo/", views.estoquealmo, name="estoquealmo"), 
+    path("estoqueat/", views.estoqueat, name="estoqueat"),
+    path("estoquealmo/", views.estoquealmo, name="estoquealmo"),
     path('cadastro_login/', views.cadastro_login, name='cadastro_login'),
 
     path('', views.profile, name='profile'),
@@ -47,7 +47,6 @@ urlpatterns = [
 
     path('editar_estoquealmo/<int:item_id>/', views.editar_estoquealmo, name='editar_estoquealmo'),
 
-
     path('deletar/<int:item_id>/', views.deletar_estoquealmo, name='deletar_estoquealmo'),
-    
+
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)

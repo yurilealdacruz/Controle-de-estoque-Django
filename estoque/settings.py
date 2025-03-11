@@ -77,6 +77,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'estoque.wsgi.application'
 
 
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# DADOS DO PYTHON ANYWHERE
 
 DATABASES = {
     'default': {
@@ -141,7 +144,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', 'yakiro.pythonanywhere.com', '127.0.0.1']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

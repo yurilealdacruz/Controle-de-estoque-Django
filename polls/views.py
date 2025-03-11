@@ -22,8 +22,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse
 
 
-
-
 # Create your views here.
 
 
@@ -36,7 +34,6 @@ def estoqueat(request):
     dadosat = EstoqueAT.objects.all()
     dadosat = EstoqueAT.objects.all().order_by('id')
     return render(request, 'templatesat/index.html', {"dadosat":dadosat})
-
 
 def estoquealmo(request):
     dadosalmo = EstoqueAlmo.objects.all()
@@ -52,7 +49,7 @@ def buscar_item(request):
     else:
         # Se nenhum termo for buscado, mostre todos os itens
         items = Estoque.objects.all()
-    
+
     return render(request, 'index.html', {'dados': items, 'query': query, 'salas': SALA_CHOICES})
 
 
@@ -147,18 +144,18 @@ def editar_estoque(request, item_id):
 @login_required
 def editar_estoqueat(request, item_id):
     item = EstoqueAT.objects.get(id=item_id)  # Obter o item primeiro
-    
+
     if not request.user.has_perm('polls.change_estoque_at'):
         messages.error(request, "Você não tem permissão para alterar o item.")
         return redirect('estoqueat')  # Redirecionar para a lista de estoque
-    
+
     if request.method == 'POST':
         try:
             quantidade_retirada = int(request.POST['retirada'])
         except (ValueError, KeyError):
             messages.error(request, "Por favor, forneça um valor válido para retirada.")
             return redirect('estoqueat')  # Redirecionar para a lista de estoque
-        
+
         if quantidade_retirada >= 0 and quantidade_retirada <= item.estoque:
             item.retirada = quantidade_retirada
             item.adicao = 0
@@ -168,13 +165,16 @@ def editar_estoqueat(request, item_id):
         else:
             messages.error(request, "Quantidade de retirada inválida. Verifique o estoque disponível.")
             return redirect('estoqueat')  # Redirecionar para a lista de estoque
-    
+
     return render(request, 'nome.html', {'item': item})
 
 @login_required
 def retirar_estoquealmo(request, item_id):
-    item = EstoqueAlmo.objects.get(id=item_id)  # Obter o item primeiro
-
+    try:
+        item = EstoqueAlmo.objects.get(id=item_id)  # Obter o item primeiro
+    except EstoqueAlmo.DoesNotExist:
+        messages.error(request, "Item não encontrado.")
+        return redirect('estoquealmo')
 
     if not request.user.has_perm('polls.change_estoque_almo'):
         messages.error(request, "Você não tem permissão para editar o estoque.")
@@ -183,7 +183,6 @@ def retirar_estoquealmo(request, item_id):
     if request.method == 'POST':
         try:
             retirada = int(request.POST['retirada'])
-            print("Teste2")
         except (ValueError, KeyError):
             messages.error(request, "Por favor, forneça um valor válido para retirada.")
             return redirect('estoquealmo')
@@ -193,7 +192,6 @@ def retirar_estoquealmo(request, item_id):
             item.retirada = retirada
             item.adicao = 0
             item.save()
-
             messages.success(request, "Estoque atualizado com sucesso.")
             return redirect('estoquealmo')
         else:
@@ -203,7 +201,6 @@ def retirar_estoquealmo(request, item_id):
     return render(request, 'nome.html', {'item': item})
 
 def adicionar_estoque(request, dado_id):
-    
     if not request.user.has_perm('polls.change_estoque'):
         messages.error(request, "Você não tem permissão para editar o estoque.")
         return redirect('index')
@@ -250,10 +247,9 @@ def adicionar_estoqueat(request, dado_id):
                 return redirect('estoqueat')
         else:
             return HttpResponseBadRequest("Método inválido")
-    
+
 
 def adicionar_estoquealmo(request, dado_id):
-    
     if not request.user.has_perm('polls.change_estoque_almo'):
         messages.error(request, "Você não tem permissão para editar o estoque.")
         return redirect('estoquealmo')
@@ -268,6 +264,7 @@ def adicionar_estoquealmo(request, dado_id):
                 dado.adicao = adicao # Atualiza o estoque
                 dado.retirada = 0
                 dado.save()
+
                 # Adicionando um registro no histórico personalizado
                 EstoqueHistoricoAlmo.objects.create(estoque=dado, quantidade_adicionada=adicao)
 
@@ -313,37 +310,40 @@ def historico_retiradasAlmo(request):
 
 
 def historico_retiradas_grafico_at(request):
-    # Agrupar os dados históricos por nome e somar as retiradas
+  # Agrupar os dados históricos por nome e somar as retiradas
     estoques = EstoqueAT.history.values('nome').annotate(total_retiradas=Sum('retirada'))
+
+    # Ordenar todos os itens do maior para o menor
+    estoques = sorted(estoques, key=lambda x: x['total_retiradas'], reverse=True)
 
     # Prepara os dados para o gráfico
     labels = [estoque['nome'] for estoque in estoques]
     sizes = [estoque['total_retiradas'] for estoque in estoques]
-    colors = plt.cm.Paired.colors[:len(labels)]
 
-    # Verifica se há dados para plotar
-    if not sizes:
-        sizes = [1]  # Para evitar erro no gráfico se não houver dados
+    # Criar gráfico de barras
+    fig, ax = plt.subplots(figsize=(12, 9))  # Aumentar o tamanho do gráfico
+    ax.barh(labels, sizes, color='skyblue', height=0.5)  # Ajustar a altura das barras
 
-    # Criar gráfico de pizza sem porcentagens internas
-    fig, ax = plt.subplots(figsize=(15, 10))
-    wedges, texts = ax.pie(sizes, colors=colors, shadow=True, startangle=140)
+    # Adicionar rótulos e título
+    ax.set_xlabel('Total de Retiradas', fontsize=14)  # Aumentar o tamanho do rótulo do eixo x
+    ax.set_title('Gráfico de Retiradas de Insumos', fontsize=16)  # Aumentar o tamanho do título
 
-    # Calcula a porcentagem de cada item
-    porcentagens = [f"{size / sum(sizes) * 100:.1f}%" for size in sizes]
+    # Adicionar os valores ao lado de cada barra
+    for index, value in enumerate(sizes):
+        ax.text(value, index, str(value), fontsize=12)  # Aumentar o tamanho da fonte dos valores
 
-    # Cria uma lista de rótulos com nome e porcentagem
-    legend_labels = [f"{label} ({porcentagem})" for label, porcentagem in zip(labels, porcentagens)]
+    # Aumentar o tamanho da fonte dos rótulos das barras
+    ax.tick_params(axis='y', labelsize=12)  # Altera o tamanho da fonte dos nomes dos itens
 
-    # Adiciona a legenda fora do gráfico
-    ax.legend(wedges, legend_labels, title="Itens", loc="center left", bbox_to_anchor=(0.85, 0, 0.5, 1))
+    # Inverter a ordem dos itens para que o maior fique no topo
+    ax.invert_yaxis()
 
-    # Configura o gráfico para ser "igual"
-    ax.axis('equal')
+    # Ajustar o layout para centralizar e melhorar a apresentação
+    plt.subplots_adjust(left=0.3, right=0.9, top=3.0, bottom=0.2, hspace=1.0)  # Aumentar o espaçamento vertical
 
     # Salvar a imagem em um objeto BytesIO
     buf = io.BytesIO()
-    plt.savefig(buf, format='png')
+    plt.savefig(buf, format='png', bbox_inches='tight')  # Usar bbox_inches='tight' para ajustar a imagem
     buf.seek(0)
     plt.close()
 
@@ -363,7 +363,7 @@ def historico_retiradas_grafico_almo(request):
     # Prepara os dados para o gráfico
     labels = [estoque['nome'] for estoque in estoques]
     sizes = [estoque['total_retiradas'] for estoque in estoques]
-    
+
     # Criar gráfico de barras
     fig, ax = plt.subplots(figsize=(12, 9))  # Aumentar o tamanho do gráfico
     ax.barh(labels, sizes, color='skyblue', height=0.5)  # Ajustar a altura das barras
@@ -396,6 +396,7 @@ def historico_retiradas_grafico_almo(request):
 
     # Retornar o template com o gráfico
     return render(request, 'historico_retiradas_grafico_almo.html', {'grafico_base64': grafico_base64})
+
 
 def historico_retiradas_grafico(request):
     # Agrupar os dados históricos por nome e somar as retiradas
@@ -465,6 +466,7 @@ def historico_retiradas_grafico(request):
     # Retornar o template com o gráfico
     return render(request, 'historico_retiradas_grafico.html', {'grafico_base64': grafico_base64})
 
+
 # Adicione uma nova view para renderizar o template
 
 def mostrar_grafico(request):
@@ -486,7 +488,7 @@ def adicionar_item_almo(request):
         else:
             form = EstoqueAlmoForm()
         return render(request, 'adicionar_item_almo.html', {'form': form})
-    
+
 
 def adicionar_item(request):
     if not request.user.has_perm('polls.change_estoque'):
@@ -501,7 +503,7 @@ def adicionar_item(request):
         else:
             form = EstoqueForm()
         return render(request, 'adicionar_item.html', {'form': form})
-    
+
 
 def adicionar_item_at(request):
     if not request.user.has_perm('polls.change_estoque_at'):
@@ -518,18 +520,17 @@ def adicionar_item_at(request):
 
 
 
-
 def editar_estoquealmo(request, item_id):
     if request.method == 'POST':
         item = get_object_or_404(EstoqueAlmo, pk=item_id)  # Substitua 'SuaModel' pelo nome do seu modelo
         item.retirada = 0  # Sempre define retirada como 0
         item.adicao = 0
         item.nome = request.POST.get('nome', item.nome)  # Atualiza o nome se enviado
+        item.modelo = request.POST.get('modelo', item.modelo)  # Atualiza o modelo a ser enviado
         item.endereco = request.POST.get('endereco', item.endereco)  # Atualiza a localização se enviado
         item.estoque = int(request.POST.get('estoque', item.estoque))  # Atualiza o estoque
         item.categoria = request.POST.get('categoria', item.categoria)  # Atualiza a categoria
         item.save()
-        print('teste')
         return redirect('estoquealmo')  # Substitua pelo nome da página onde deseja redirecionar
     return HttpResponse("Método inválido", status=400)
 
@@ -540,4 +541,4 @@ def deletar_estoquealmo(request, item_id):
         item = get_object_or_404(EstoqueAlmo, id=item_id)
         item.delete()
         messages.success(request, "Item excluído com sucesso!")
-    return redirect('estoquealmo') 
+    return redirect('estoquealmo')
