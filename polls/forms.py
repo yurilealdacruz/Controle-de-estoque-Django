@@ -16,7 +16,7 @@ class EstoqueForm(forms.ModelForm):
 class EstoqueAlmoForm(forms.ModelForm):
     class Meta:
         model = EstoqueAlmo
-        fields = ['nome', 'estoque', 'endereco', 'categoria', 'foto']
+        fields = ['nome', 'estoque', 'modelo', 'endereco', 'categoria', 'foto']
 
 class EstoqueATForm(forms.ModelForm):
     class Meta:
