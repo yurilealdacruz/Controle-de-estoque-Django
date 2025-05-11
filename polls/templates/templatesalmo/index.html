@@ -44,6 +44,7 @@
         endereco: $("#modalEditar_" + id + " #endereco").val(),
         estoque: $("#modalEditar_" + id + " #estoque").val(),
         categoria: $("#modalEditar_" + id + " #categoria").val(),
+        tipo: $("#modalEditar_" + id + " #tipo").val(),
         csrfmiddlewaretoken: "{{ csrf_token }}"
     };
 
@@ -114,6 +115,7 @@
                 <th class="table-header">Modelo</th>
                 <th class="table-header">Localização</th>
                 <th class="table-header">Infra | TI</th>
+                <th class="table-header">Categoria</th>
                 <th class="table-header">Quantidade</th>
                 <th class="table-header">Opção</th>
             </tr>
@@ -129,10 +131,11 @@
                     <td class="table-cel">{{ dadoalmo.modelo }}</td>
                     <td class="table-cel">{{ dadoalmo.endereco }}</td>
                     <td class="table-cel">{{ dadoalmo.categoria }}</td>
+                    <td class="table-cel">{{ dadoalmo.tipo }}</td>
                     <td class="table-cel">{{ dadoalmo.estoque }}</td>
                     <td class="table-cel">
-                       <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dadoalmo.id }}')">| Retirar |</a>
-                       <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dadoalmo.id }}')">| Adicionar |</a>
+                       <a class="table-link" href="#" onclick="abrirModalRetirar('{{ dadoalmo.id }}')">Retirar |</a>
+                       <a class="table-link" href="#" onclick="abrirModalAdicionar('{{ dadoalmo.id }}')">Adicionar </a>
                     </td>
                 </tr>
             {% endfor %}
@@ -161,6 +164,10 @@
                 <input type="text" id="endereco" name="endereco" value="{{ dadoalmo.endereco }}" required>
                 <br>
 
+                <label for="tipo">Categoria:</label>
+                <input type="text" id="tipo" name="tipo" value="{{ dadoalmo.tipo }}" required>
+                <br>
+
                 <label for="estoque">Estoque:</label>
                 <input type="number" id="estoque" name="estoque" value="{{ dadoalmo.estoque }}" required>
                 <br>
@@ -173,13 +180,39 @@
                 </select>
                 <br>
 
-                <button type="submit">Salvar alterações</button>
+<style>
+  .btn-salvar {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn-salvar:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+  }
+</style>
+
+<button type="submit" class="btn-salvar">Salvar alterações</button>
+
+
             </form>
 
             <!-- Botão para excluir o item -->
             <form method="POST" action="{% url 'deletar_estoquealmo' dadoalmo.id %}" onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
                 {% csrf_token %}
-                <button type="submit" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
+                <button type="submit" style="display: block; margin-left: auto; background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
+
+
             </form>
         </div>
     </div>

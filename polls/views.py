@@ -365,7 +365,19 @@ def historico_retiradas_grafico_almo(request):
     sizes = [estoque['total_retiradas'] for estoque in estoques]
 
     # Criar gráfico de barras
-    fig, ax = plt.subplots(figsize=(12, 9))  # Aumentar o tamanho do gráfico
+   
+   
+   
+   # Calcular altura do gráfico com base na quantidade de itens (máximo de 40 para evitar gráfico gigantesco)
+
+    num_itens = len(estoques)
+    altura_por_item = 0.4
+    altura_total = max(6, min(num_itens * altura_por_item, 20))  # Limita a altura máxima
+
+    fig, ax = plt.subplots(figsize=(12, altura_total))  # Altura ajustada dinamicamente
+    # Aumentar o tamanho do gráfico
+
+
     ax.barh(labels, sizes, color='skyblue', height=0.5)  # Ajustar a altura das barras
 
     # Adicionar rótulos e título
@@ -374,7 +386,8 @@ def historico_retiradas_grafico_almo(request):
 
     # Adicionar os valores ao lado de cada barra
     for index, value in enumerate(sizes):
-        ax.text(value, index, str(value), fontsize=12)  # Aumentar o tamanho da fonte dos valores
+        ax.text(value + 0.5, index, str(value), fontsize=10, va='center')  # Evita sobreposição colando na barra
+ # Aumentar o tamanho da fonte dos valores
 
     # Aumentar o tamanho da fonte dos rótulos das barras
     ax.tick_params(axis='y', labelsize=12)  # Altera o tamanho da fonte dos nomes dos itens
@@ -528,7 +541,8 @@ def editar_estoquealmo(request, item_id):
         item.nome = request.POST.get('nome', item.nome)  # Atualiza o nome se enviado
         item.modelo = request.POST.get('modelo', item.modelo)  # Atualiza o modelo a ser enviado
         item.endereco = request.POST.get('endereco', item.endereco)  # Atualiza a localização se enviado
-        item.estoque = int(request.POST.get('estoque', item.estoque))  # Atualiza o estoque
+        item.estoque = int(request.POST.get('estoque', item.estoque)) # Atualiza o estoque
+        item.tipo = request.POST.get('tipo', item.tipo) 
         item.categoria = request.POST.get('categoria', item.categoria)  # Atualiza a categoria
         item.save()
         return redirect('estoquealmo')  # Substitua pelo nome da página onde deseja redirecionar

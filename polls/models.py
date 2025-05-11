@@ -149,6 +149,7 @@ class EstoqueAlmo(models.Model):
     id = models.BigAutoField(primary_key=True)
     nome = models.CharField(max_length=50)
     modelo = models.CharField(max_length=255, default="Nenhum")
+    tipo = models.CharField(max_length=255, default="Nenhuma")
     retirada = models.IntegerField(default=0)
     estoque = models.IntegerField()
     endereco = models.CharField(max_length=255, default="Sem registro de localização")
